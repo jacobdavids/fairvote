@@ -1,0 +1,49 @@
+<head>
+  <title>FreeVote</title>
+</head>
+
+<body>
+  <h1>Welcome to FreeVote!</h1>
+  {{> hello}}
+  {{> info}}
+
+  {{> createpoll}}
+  {{> votepoll}}
+  {{> viewpoll}}
+  <ul>
+    {{#each polls}}
+      {{> poll}}
+    {{/each}}
+  </ul>
+</body>
+
+<template name="hello">
+  <button>Click Me</button>
+  <p>You've pressed the button {{counter}} times.</p>
+</template>
+
+<template name="createpoll">
+  <button>Create Poll</button>
+</template>
+
+<template name="votepoll">
+  <button>Vote</button>
+</template>
+
+<template name="viewpoll">
+  <button>View Results</button>
+</template>
+
+<template name="poll">
+  <li>{{title}}</li>
+</template>
+
+<template name="info">
+  <h2>Learn Meteor!</h2>
+  <ul>
+    <li><a href="https://www.meteor.com/try">Do the Tutorial</a></li>
+    <li><a href="http://guide.meteor.com">Follow the Guide</a></li>
+    <li><a href="https://docs.meteor.com">Read the Docs</a></li>
+    <li><a href="https://forums.meteor.com">Discussions</a></li>
+  </ul>
+</template>
