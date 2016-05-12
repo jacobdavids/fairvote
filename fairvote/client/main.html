@@ -4,26 +4,33 @@
 
 <body>
   <h1>Welcome to FreeVote!</h1>
-  {{> hello}}
-  {{> info}}
-
   {{> createpoll}}
-  {{> votepoll}}
-  {{> viewpoll}}
   <ul>
     {{#each polls}}
       {{> poll}}
     {{/each}}
   </ul>
+
+  {{> info}}
+
+  {{> votepoll}}
+  {{> viewpoll}}
 </body>
 
-<template name="hello">
-  <button>Click Me</button>
-  <p>You've pressed the button {{counter}} times.</p>
+<template name="createpoll">
+  <h2>Create Poll</h2>
+  <form class="new-poll">
+    <input type="text" name="title" placeholder="Poll Title" /><br>
+    <input type="text" name="choice1" placeholder="Poll Choice 1" /><br>
+    <input type="text" name="choice2" placeholder="Poll Choice 2" /><br>
+    <input type="text" name="maxvotes" placeholder="Maximum Votes" /><br>
+    <button>Create Poll</button>
+  </form>
 </template>
 
-<template name="createpoll">
-  <button>Create Poll</button>
+<template name="hello">
+  <br><button>Click Me</button>
+  <p>You've pressed the button {{counter}} times.</p>
 </template>
 
 <template name="votepoll">
@@ -35,7 +42,10 @@
 </template>
 
 <template name="poll">
-  <li>{{title}}</li>
+  <li>
+    <span>{{title}}</span>
+    <button class="delete-poll">Delete</button>
+  </li>
 </template>
 
 <template name="info">
