@@ -1,1 +1,4 @@
 /* CSS declarations go here */
+.poll-table > tr > th {
+	text-align: left;
+}

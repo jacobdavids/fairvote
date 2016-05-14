@@ -1,20 +1,28 @@
 <head>
-  <title>FreeVote</title>
+  <title>FairVote</title>
 </head>
 
 <body>
-  <h1>Welcome to FreeVote!</h1>
+  <h1>Welcome to FairVote!</h1>
+  <!--{{> hello}}-->
   {{> createpoll}}
-  <ul>
-    {{#each polls}}
-      {{> poll}}
-    {{/each}}
-  </ul>
 
-  {{> info}}
+  <h2>Blockchain Polls</h2>
+  <table class="poll-table">
+    <tr>
+      <th>Title</th>
+      <th>Choices</th>
+      <th>Address</th>
+    </tr>
+    <tbody>
+      {{#each polls}}
+        {{> poll}}
+      {{/each}}
+    </tbody>
+  </table>
 
-  {{> votepoll}}
-  {{> viewpoll}}
+  {{> vote}}
+  {{> viewvotes}}
 </body>
 
 <template name="createpoll">
@@ -23,37 +31,56 @@
     <input type="text" name="title" placeholder="Poll Title" /><br>
     <input type="text" name="choice1" placeholder="Poll Choice 1" /><br>
     <input type="text" name="choice2" placeholder="Poll Choice 2" /><br>
-    <input type="text" name="maxvotes" placeholder="Maximum Votes" /><br>
+    <input type="text" name="maxVotes" placeholder="Maximum Votes" /><br>
     <button>Create Poll</button>
   </form>
 </template>
 
+<template name="poll">
+  <tr>
+    <td>{{title}}</td>
+    <td>{{choices}}</td>
+    <td>{{contract.address}}</td>
+    <td><button class="delete-poll">Delete</button></td>
+  </tr>
+</template>
+
+<template name="vote">
+    <h2>Voting</h2>
+    <form class="select-poll">
+      <select name="select">
+        {{#each polls}}
+        <option  value="{{contract.address}}">{{contract.address}}</option>
+        {{/each}}
+      </select>
+      <button>Select Poll</button>
+    </form>
+    <form class="vote-on-poll">
+      {{#each choices}}
+      <input type="radio" name="choice" value="{{this}}">{{this}}<br>
+      {{/each}}
+      {{#if choices}}
+      <button>Submit Vote</button>
+      {{/if}}
+    </form>
+  </template>
+
+  <template name="viewvotes">
+    <h2>View Votes</h2>
+    <form class="select-poll">
+      <select name="select">
+        {{#each polls}}
+        <option  value="{{contract.address}}">{{contract.address}}</option>
+        {{/each}}
+      </select>
+      <button>Select Poll</button>
+    </form>
+    {{#each votes}}
+      <span>{{choice}}:&nbsp;</span><span>{{numVotes}}</span><br>
+    {{/each}}
+  </template>
+
 <template name="hello">
   <br><button>Click Me</button>
   <p>You've pressed the button {{counter}} times.</p>
-</template>
-
-<template name="votepoll">
-  <button>Vote</button>
-</template>
-
-<template name="viewpoll">
-  <button>View Results</button>
-</template>
-
-<template name="poll">
-  <li>
-    <span>{{title}}</span>
-    <button class="delete-poll">Delete</button>
-  </li>
-</template>
-
-<template name="info">
-  <h2>Learn Meteor!</h2>
-  <ul>
-    <li><a href="https://www.meteor.com/try">Do the Tutorial</a></li>
-    <li><a href="http://guide.meteor.com">Follow the Guide</a></li>
-    <li><a href="https://docs.meteor.com">Read the Docs</a></li>
-    <li><a href="https://forums.meteor.com">Discussions</a></li>
-  </ul>
 </template>
