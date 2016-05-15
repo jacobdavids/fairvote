@@ -1,5 +1,6 @@
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
+import { Session } from 'meteor/session'
 import { Polls } from '../imports/api/polls.js';
 import { Votes } from '../imports/api/votes.js';
 
@@ -109,31 +110,13 @@ Template.vote.onCreated(function voteOnCreated() {
 });
 
 Template.vote.helpers({
-  polls() {
-    return Polls.find({});
-  },
   choices() {
-  	return Template.instance().choices.get()
+  	return Session.get("currentChoices");
   },
 });
 
+
 Template.vote.events({
-	// Show choices for selected poll
-  'submit .select-poll': function(event, template) {
-    // Prevent default browser form submit
-    event.preventDefault();
- 
-    // Get selected poll address
-    const target = event.target;
-    const address = target.select.value;
- 	// Get poll from block chain
- 	var poll = web3.eth.contract([{ constant: false, inputs: [], name: "kill", outputs: [], type: "function" }, { constant: true, inputs: [], name: "p", outputs: [{ name: "owner", type: "address" }, { name: "title", type: "string" }, { name: "choices", type: "string" }, { name: "maxVotes", type: "uint256" }, { name: "numVotes", type: "uint256" }, { name: "finishDate", type: "uint256" }, { name: "active", type: "bool" }], type: "function" }, { constant: false, inputs: [], name: "deactivatePoll", outputs: [{ name: "", type: "bool" }], type: "function" }, { constant: false, inputs: [{ name: "choice", type: "string" }], name: "vote", outputs: [{ name: "", type: "bool" }], type: "function" }, { inputs: [{ name: "_title", type: "string" }, { name: "_choices", type: "string" }, { name: "_maxVotes", type: "uint256" }, { name: "_finishDate", type: "uint256" }], type: "constructor" }, { anonymous: false, inputs: [{ indexed: false, name: "choice", type: "string" }], name: "Vote", type: "event" }]).at(address);
- 
- 	// Get choices from poll
- 	var vote_choices = JSON.parse(poll.p()[2]);
- 	template.choices.set(vote_choices);
- 	template.address.set(address);
-  },
   // Submit vote on poll
   'submit .vote-on-poll': function(event, template) {
     // Prevent default browser form submit
@@ -144,7 +127,7 @@ Template.vote.events({
     const choice = target.choice.value;
 
     // Get selected address
-    const address = template.address.get();
+    var address = Session.get("currentPoll").contract.address;
 
     // Get poll from address
 	var poll = web3.eth.contract([{ constant: false, inputs: [], name: "kill", outputs: [], type: "function" }, { constant: true, inputs: [], name: "p", outputs: [{ name: "owner", type: "address" }, { name: "title", type: "string" }, { name: "choices", type: "string" }, { name: "maxVotes", type: "uint256" }, { name: "numVotes", type: "uint256" }, { name: "finishDate", type: "uint256" }, { name: "active", type: "bool" }], type: "function" }, { constant: false, inputs: [], name: "deactivatePoll", outputs: [{ name: "", type: "bool" }], type: "function" }, { constant: false, inputs: [{ name: "choice", type: "string" }], name: "vote", outputs: [{ name: "", type: "bool" }], type: "function" }, { inputs: [{ name: "_title", type: "string" }, { name: "_choices", type: "string" }, { name: "_maxVotes", type: "uint256" }, { name: "_finishDate", type: "uint256" }], type: "constructor" }, { anonymous: false, inputs: [{ indexed: false, name: "choice", type: "string" }], name: "Vote", type: "event" }]).at(address);
@@ -172,9 +155,6 @@ Template.viewvotes.onCreated(function viewvotesOnCreated() {
 });
 
 Template.viewvotes.helpers({
-  polls() {
-    return Polls.find({});
-  },
   votes() {
   	// Get selected poll
   	var selectedPoll;
@@ -224,6 +204,9 @@ Template.viewvotes.events({
 
     // Set reactive variable
  	template.address.set(address);
+ 	
+ 	// Clear allVoteEvents reactive variable
+ 	template.allVoteEvents.set([]);
 
  	// Get selected poll
   	var selectedPoll;
@@ -251,10 +234,10 @@ Template.viewvotes.events({
 			function(err, result) {
 				if (!err) {
 					// voteEvents.push(result);
-					var allVoteEvents = template.allVoteEvents.get()
-					allVoteEvents.push(result);
+					var voteEvents = template.allVoteEvents.get()
+					voteEvents.push(result);
 					template.allVoteEvents.set(voteEvents);
-					console.log(result);
+					console.log(result.args.choice);
 				} 
 		});
   	}
@@ -271,5 +254,13 @@ Template.poll.events({
 	// Remove poll from database
   	Polls.remove(this._id);
   	console.log("Poll deleted from blockchain");
+  },
+  'click .vote-poll'() {
+    // Get poll
+    var poll = Template.instance().data;
+    var pollChoices = JSON.parse(poll.choices);
+    // Set session data
+    Session.set("currentPoll", poll);
+    Session.set("currentChoices", pollChoices);
   },
 });
