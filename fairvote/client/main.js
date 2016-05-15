@@ -113,6 +113,9 @@ Template.vote.helpers({
   choices() {
   	return Session.get("currentChoices");
   },
+  voting() {
+  	return Session.get("voting");
+  }
 });
 
 
@@ -143,6 +146,8 @@ Template.vote.events({
  			} 
  		}
  	);
+
+ 	Session.set("voting", false);
   },
 });
 
@@ -262,5 +267,6 @@ Template.poll.events({
     // Set session data
     Session.set("currentPoll", poll);
     Session.set("currentChoices", pollChoices);
+    Session.set("voting", true);
   },
 });
