@@ -12,7 +12,7 @@ body {
 	width: 100%;
     display: block;
     border: 1px solid #3079ed;
-    color: #fff;
+    color: #ffffff !important;
     text-shadow: 0 1px rgba(0,0,0,0.1);
     background-color: #4d90fe;
     font-weight: bold;
@@ -46,6 +46,21 @@ body {
 .header .col-lg-12 {
 	text-align: center;
 	padding: 15px 0px;
+}
+
+/* Notifications */
+ul.notifications {
+	width: 320px;
+	position: fixed;
+}
+
+li.notification {
+	border-radius: 2px;
+}
+
+li.notification.success {
+	background: #4d90fe;
+	border: 1px solid #3079ed;
 }
 
 /* Sections */
@@ -86,6 +101,15 @@ body {
 
 .new-poll .form-control {
 	border-radius: 0px;
+	margin-bottom: 20px;
+}
+
+.add-choice,
+.remove-choice {
+	width: 13%;
+	margin-bottom: 20px;
+	float: right;
+	margin-left: 10px;
 }
 
 /* Existing polls section */
@@ -104,7 +128,7 @@ body {
     border: 1px solid #e5e5e5;
     padding: 10px;
 	text-align: center;
-	/*font-size: 16px;*/
+	height: 340px;
 }
 
 .all-polls li strong {
@@ -117,13 +141,28 @@ body {
 	margin-bottom: 0px;
 }
 
+.existing-polls-section {
+	padding: 10px;
+}
+
+/* Vote section */
+.vote-section {
+	display: none;
+}
+
+.vote-on-poll button {
+	margin: 0 auto;
+	width: 70%;
+}
+
 .form-fields {
 	display: inline-block;
     text-align: left;
     margin-bottom: 10px;
 }
 
-.form-fields label {
+.form-fields label,
+.form-fields span {
 	margin-left: 10px;
 	font-size: 22px;
 	font-weight: normal;
@@ -133,7 +172,7 @@ body {
 	margin-top: 0px;
 }
 
-.vote-on-poll button {
-	margin: 0 auto;
-	width: 70%;
+/* View votes section */
+.view-votes-section {
+	display: none;
 }

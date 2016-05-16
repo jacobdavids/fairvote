@@ -4,30 +4,47 @@ import { Session } from 'meteor/session'
 import { Polls } from '../imports/api/polls.js';
 import { Votes } from '../imports/api/votes.js';
 
-import './main.html';
+import './templates/main.html';
 
-Template.hello.onCreated(function helloOnCreated() {
-  // counter starts at 0
-  this.counter = new ReactiveVar(0);
+Meteor.startup(function () {
+    _.extend(Notifications.defaultOptions, {
+        timeout: 5000
+    });
 });
 
-Template.hello.helpers({
-  counter() {
-    return Template.instance().counter.get();
-  },
-});
+function getVoteEvents() {
+	// Get current poll
+    var currentPoll = Session.get("currentPoll");
 
-Template.hello.events({
-  'click button'(event, instance) {
-    // increment the counter when button is clicked
-    instance.counter.set(instance.counter.get() + 1);
-    // Meteor.call('removeAllPolls');
-  },
-});
+    // Get selected address
+    var address = currentPoll.contract.address;
+
+    // Get poll from address
+	var poll = web3.eth.contract([{ constant: false, inputs: [], name: "kill", outputs: [], type: "function" }, { constant: true, inputs: [], name: "p", outputs: [{ name: "owner", type: "address" }, { name: "title", type: "string" }, { name: "choices", type: "string" }, { name: "maxVotes", type: "uint256" }, { name: "numVotes", type: "uint256" }, { name: "finishDate", type: "uint256" }, { name: "active", type: "bool" }], type: "function" }, { constant: false, inputs: [], name: "deactivatePoll", outputs: [{ name: "", type: "bool" }], type: "function" }, { constant: false, inputs: [{ name: "choice", type: "string" }], name: "vote", outputs: [{ name: "", type: "bool" }], type: "function" }, { inputs: [{ name: "_title", type: "string" }, { name: "_choices", type: "string" }, { name: "_maxVotes", type: "uint256" }, { name: "_finishDate", type: "uint256" }], type: "constructor" }, { anonymous: false, inputs: [{ indexed: false, name: "choice", type: "string" }], name: "Vote", type: "event" }]).at(address);
+
+	// Count votes for the poll now
+ 	var startBlock = web3.eth.getTransaction(currentPoll.contract.transactionHash).blockNumber;
+	var filter = poll.Vote(
+		{}, 
+		{
+			fromBlock: startBlock, 
+			toBlock: 'latest'
+		},
+		function(err, result) {
+			if (!err) {
+				var currentVotes = Session.get("voteEvents");
+				currentVotes.push(result);
+				Session.set("voteEvents", currentVotes);
+				console.log(result.args.choice);
+			} 
+	});
+}
 
 Template.body.onCreated(function bodyOnCreated() {
   // init reactive variables
   this.polls = new ReactiveVar([]);
+  // Set session variable for number of choice fields to display
+  Session.set("choiceFields", 2);
 });
 
 Template.body.helpers({
@@ -45,13 +62,14 @@ Template.body.events({
     // Get input poll data
     const target = event.target;
     const title = target.title.value;
-    const choice1 = target.choice1.value;
-    const choice2 = target.choice2.value;
     const maxVotes = target.maxVotes.value;
- 
- 	var choices = [];
- 	choices.push(choice1);
- 	choices.push(choice2);
+    // Get number of choice fields from session variable
+    var numChoiceFields = Session.get("choiceFields");
+    var choiceFields = target.children.item(1).children;
+    var choices = [];
+    for (var i=0; i < choiceFields.length; i+=1) {
+    	choices.push(choiceFields[i].value);
+    }
  	choices = JSON.stringify(choices);
     // Insert a poll into the collection
     var pollID = Polls.insert({
@@ -96,9 +114,30 @@ Template.body.events({
  
     // Clear form
     target.title.value = '';
-    target.choice1.value = '';
-    target.choice2.value = '';
+    for (var i=0; i < choiceFields.length; i+=1) {
+    	choiceFields[i].value = '';
+    }
     target.maxVotes.value = '';
+  },
+  'click .add-choice'(event) {
+    // Prevent default browser form submit
+    event.preventDefault();
+    // Update number of choice fields in session variable
+    var numChoiceFields = Session.get("choiceFields");
+    numChoiceFields += 1;
+    Session.set("choiceFields", numChoiceFields)
+    $('.poll-choices').append("<input type='text' class='form-control' name='choice" + numChoiceFields + "' placeholder='Poll Choice " + numChoiceFields + "' />");
+  },
+  'click .remove-choice'(event) {
+    // Prevent default browser form submit
+    event.preventDefault();
+    // Update number of choice fields in session variable
+    var numChoiceFields = Session.get("choiceFields");
+    if (numChoiceFields > 2) {
+      $('.poll-choices').children()[numChoiceFields-1].remove()
+      numChoiceFields -= 1;
+      Session.set("choiceFields", numChoiceFields)
+    }
   },
 });
 
@@ -113,9 +152,6 @@ Template.vote.helpers({
   choices() {
   	return Session.get("currentChoices");
   },
-  voting() {
-  	return Session.get("voting");
-  }
 });
 
 
@@ -129,8 +165,11 @@ Template.vote.events({
     const target = event.target;
     const choice = target.choice.value;
 
+    // Get current poll
+    var currentPoll = Session.get("currentPoll");
+
     // Get selected address
-    var address = Session.get("currentPoll").contract.address;
+    var address = currentPoll.contract.address;
 
     // Get poll from address
 	var poll = web3.eth.contract([{ constant: false, inputs: [], name: "kill", outputs: [], type: "function" }, { constant: true, inputs: [], name: "p", outputs: [{ name: "owner", type: "address" }, { name: "title", type: "string" }, { name: "choices", type: "string" }, { name: "maxVotes", type: "uint256" }, { name: "numVotes", type: "uint256" }, { name: "finishDate", type: "uint256" }, { name: "active", type: "bool" }], type: "function" }, { constant: false, inputs: [], name: "deactivatePoll", outputs: [{ name: "", type: "bool" }], type: "function" }, { constant: false, inputs: [{ name: "choice", type: "string" }], name: "vote", outputs: [{ name: "", type: "bool" }], type: "function" }, { inputs: [{ name: "_title", type: "string" }, { name: "_choices", type: "string" }, { name: "_maxVotes", type: "uint256" }, { name: "_finishDate", type: "uint256" }], type: "constructor" }, { anonymous: false, inputs: [{ indexed: false, name: "choice", type: "string" }], name: "Vote", type: "event" }]).at(address);
@@ -138,16 +177,19 @@ Template.vote.events({
  	poll.vote(choice, 
  		{
  			from: web3.eth.accounts[0], 
- 			gas: 200000
+ 			gas: 800000
  		}, 
  		function (error,success) {
  			if(success) {
  				console.log("Vote submitted successfully.")
+        Notifications.success('Success', 'Your vote has been placed successfully.');
  			} 
  		}
  	);
 
- 	Session.set("voting", false);
+ 	getVoteEvents();
+  $(".vote-section").hide();
+  $(".view-votes-section").show();
   },
 });
 
@@ -161,91 +203,27 @@ Template.viewvotes.onCreated(function viewvotesOnCreated() {
 
 Template.viewvotes.helpers({
   votes() {
-  	// Get selected poll
-  	var selectedPoll;
-  	var allPolls = Polls.find({}).fetch();
-  	allPolls.forEach( function (poll) {
-  		if (poll.contract) {
-  			if (poll.contract.address == Template.instance().address.get()) {
-  				selectedPoll = poll;
-  			}
-  		}
-  	});
-
-  	if (selectedPoll) {
 	  	// Get choices from poll
-	 	var pollChoices = JSON.parse(selectedPoll.choices);
-	 	// Count votes
-	  	var votes = [];
-	  	// var votes = Template.instance().votes.get()
-	  	// Loop through choices for poll
-	 	pollChoices.forEach( function (pollChoice) {
-	 		// Loop through vote events received
-	 		var numVotes = 0;
-	 		Template.instance().allVoteEvents.get().forEach( function (voteEvent) {
-	 			if (pollChoice == voteEvent.args.choice) {
-	 				numVotes += 1;
-	 			}
-	 		});
-	 		votes.push({choice: pollChoice, numVotes: numVotes})
-	 	});
-	 	Template.instance().allVotes.set(votes);
-  	}
+	 	var pollChoices = Session.get("currentChoices")
+	 	if (pollChoices) {         
+		 	// Count votes
+		  	var votes = [];
+		  	
+		  	var voteEvents = Session.get("voteEvents");
 
-
-  	return Template.instance().allVotes.get();
-  },
-});
-
-Template.viewvotes.events({
-	// Show choices for selected poll
-  'submit .select-poll': function(event, template) {
-    // Prevent default browser form submit
-    event.preventDefault();
- 
-    // Get selected poll address
-    const target = event.target;
-    const address = target.select.value;
-
-    // Set reactive variable
- 	template.address.set(address);
- 	
- 	// Clear allVoteEvents reactive variable
- 	template.allVoteEvents.set([]);
-
- 	// Get selected poll
-  	var selectedPoll;
-  	var allPolls = Polls.find({}).fetch();
-  	allPolls.forEach( function (poll) {
-  		if (poll.contract) {
-  			if (poll.contract.address == Template.instance().address.get()) {
-  				selectedPoll = poll;
-  			}
-  		}
-  	});
-
-  	// Get poll from block chain using address
-  	if (selectedPoll) {
-  		var poll = web3.eth.contract([{ constant: false, inputs: [], name: "kill", outputs: [], type: "function" }, { constant: true, inputs: [], name: "p", outputs: [{ name: "owner", type: "address" }, { name: "title", type: "string" }, { name: "choices", type: "string" }, { name: "maxVotes", type: "uint256" }, { name: "numVotes", type: "uint256" }, { name: "finishDate", type: "uint256" }, { name: "active", type: "bool" }], type: "function" }, { constant: false, inputs: [], name: "deactivatePoll", outputs: [{ name: "", type: "bool" }], type: "function" }, { constant: false, inputs: [{ name: "choice", type: "string" }], name: "vote", outputs: [{ name: "", type: "bool" }], type: "function" }, { inputs: [{ name: "_title", type: "string" }, { name: "_choices", type: "string" }, { name: "_maxVotes", type: "uint256" }, { name: "_finishDate", type: "uint256" }], type: "constructor" }, { anonymous: false, inputs: [{ indexed: false, name: "choice", type: "string" }], name: "Vote", type: "event" }]).at(selectedPoll.contract.address);
-	  	// Get votes using filter commands - add an array to grab the result for each filter (e.g. current_votes.push(result))
-		var voteEvents = [];
-		var start_block = web3.eth.getTransaction(selectedPoll.contract.transactionHash).blockNumber
-		var filter = poll.Vote(
-			{}, 
-			{
-				fromBlock: start_block, 
-				toBlock: 'latest'
-			},
-			function(err, result) {
-				if (!err) {
-					// voteEvents.push(result);
-					var voteEvents = template.allVoteEvents.get()
-					voteEvents.push(result);
-					template.allVoteEvents.set(voteEvents);
-					console.log(result.args.choice);
-				} 
-		});
-  	}
+		  	// Loop through choices for poll
+		 	pollChoices.forEach( function (pollChoice) {
+		 		// Loop through vote events received
+		 		var numVotes = 0;
+		 		voteEvents.forEach( function (voteEvent) {
+		 			if (pollChoice == voteEvent.args.choice) {
+		 				numVotes += 1;
+		 			}
+		 		});
+		 		votes.push({choice: pollChoice, numVotes: numVotes})
+		 	});
+		 }
+  	return votes;
   },
 });
 
@@ -267,6 +245,26 @@ Template.poll.events({
     // Set session data
     Session.set("currentPoll", poll);
     Session.set("currentChoices", pollChoices);
-    Session.set("voting", true);
+    $(".vote-section").show();
+    $(".view-votes-section").hide();
+    Session.set("voteEvents", []);
+    // Scroll to vote section
+    var voteSection = $(".vote-section");
+    $('html,body').animate({scrollTop: voteSection.offset().top},'slow');
+  },
+  'click .view-poll'() {
+    // Get poll
+    var poll = Template.instance().data;
+    var pollChoices = JSON.parse(poll.choices);
+    // Set session data
+    Session.set("currentPoll", poll);
+    Session.set("currentChoices", pollChoices);
+    Session.set("voteEvents", []);
+    $(".vote-section").hide();
+    $(".view-votes-section").show();
+    getVoteEvents();
+    // Scroll to view votes section
+    var viewVotesSection = $(".view-votes-section");
+    $('html,body').animate({scrollTop: viewVotesSection.offset().top},'slow');
   },
 });

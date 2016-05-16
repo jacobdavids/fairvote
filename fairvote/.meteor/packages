@@ -23,3 +23,5 @@ ethereum:web3
 ethereum:accounts
 twbs:bootstrap
 session
+fortawesome:fontawesome
+gfk:notifications

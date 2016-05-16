@@ -1,0 +1,42 @@
+<template name="vote">
+  <div class="section vote-section">
+    <div class="">
+        <div class="section-title">
+          <h1>Voting</h1>
+        </div>
+        <div class="section-body">
+          <h2>Select a choice:</h2>
+          <form class="vote-on-poll">
+            <div class="form-fields">
+              {{#each choices}}
+              <input type="radio" name="choice" value="{{this}}"><label>{{this}}</label><br>
+              {{/each}}
+            </div>
+            {{#if choices}}
+            <button class="btn">Submit Vote</button>
+            {{/if}}
+          </form>
+        </div>
+    </div>
+  </div>
+</template>
+
+<template name="viewvotes">
+  <!--{{#if viewing}}-->
+  <div class="section view-votes-section">
+    <div class="">
+        <div class="section-title">
+          <h1>View Votes</h1>
+        </div>
+        <div class="section-body">
+            <h3>Please note that votes recently made will be displayed as soon as the next block has been generated.</h3>
+            <div class="form-fields">
+            {{#each votes}}
+              <span>{{choice}}:&nbsp;</span><span>{{numVotes}}</span><br>
+            {{/each}}
+            </div>
+        </div>
+    </div>
+  </div>
+  <!--{{/if}}-->
+</template>
