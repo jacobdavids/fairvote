@@ -4,7 +4,7 @@
 
 <body>
   <div class="container-fluid">
-    {{> header}}
+    {{> header accounts=accounts}}
     {{> notifications}}
 
     {{> createpoll}}
@@ -18,7 +18,17 @@
 <template name="header">
   <div class="row header">
     <div class="col-lg-12">
-      <img src="/images/fairvote.svg" height="24px">
+      <div class="logo">
+        <img src="/images/fairvote.svg" height="24px">
+      </div>
+      <div class="eth-accounts">
+        <select class="">
+          <option value="" disabled selected>Select ethereum account</option>
+          {{#each accounts}}
+            <option>{{ address}}</option>
+          {{/each}}
+        </select>
+      </div>
     </div>
   </div>
 </template>

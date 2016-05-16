@@ -45,11 +45,16 @@ Template.body.onCreated(function bodyOnCreated() {
   this.polls = new ReactiveVar([]);
   // Set session variable for number of choice fields to display
   Session.set("choiceFields", 2);
+  // Initialise ethereum accounts package
+  EthAccounts.init();
 });
 
 Template.body.helpers({
   polls() {
     return Polls.find({});
+  },
+  accounts() {
+    return EthAccounts.find({});
   },
 });
 
@@ -138,6 +143,9 @@ Template.body.events({
       numChoiceFields -= 1;
       Session.set("choiceFields", numChoiceFields)
     }
+  },
+  'change .select-poll-field'(event) {
+    event.target.style.color = "#555";
   },
 });
 
