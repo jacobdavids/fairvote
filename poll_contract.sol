@@ -20,6 +20,7 @@ contract poll is mortal {
   struct Poll {
     address owner;
     string title;
+    string pollType;
     string choices;
     uint maxVotes;
     uint numVotes;
@@ -34,9 +35,10 @@ contract poll is mortal {
   Poll public p;
 
   /* Initiator function to set values of public Poll p */
-  function poll(string _title, string _choices, uint _maxVotes, uint _finishDate) {
+  function poll(string _title, string _pollType, string _choices, uint _maxVotes, uint _finishDate) {
     p.owner = msg.sender;
     p.title = _title;
+    p.pollType = _pollType;
     p.choices = _choices;
     p.maxVotes = _maxVotes;
     p.numVotes = 0;

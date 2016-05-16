@@ -7,10 +7,10 @@
         <div class="section-body">
             <form class="new-poll">
               <input type="text" class="form-control" name="title" placeholder="Poll Title" />
-              <select class="form-control select-poll-field">
+              <select name="polltype" class="form-control select-poll-field">
                 <option value="" disabled selected>Select poll type</option>
-                <option>First past the post</option>
-                <option>Approval</option>
+                <option value="FPTP">First past the post</option>
+                <option value="AV">Approval</option>
               </select>
               <div class="poll-choices">
               <input type="text" class="form-control" name="choice1" placeholder="Poll Choice 1" />
@@ -47,6 +47,7 @@
   <div class="col-md-4">
     <li class="poll-container">
       <h4><strong>{{title}}</strong></h4>
+      Type: {{pollType}}<br>
       Votes received: 7<br>
       Maximum votes: {{maxVotes}}<br>
       Active: {{active}}<br>
