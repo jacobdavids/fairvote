@@ -7,12 +7,19 @@
         <div class="section-body">
           <h2>Select a choice:</h2>
           <form class="vote-on-poll">
-            <div class="form-fields">
-              {{#each choices}}
-              <input type="radio" name="choice" value="{{this}}"><label>{{this}}</label><br>
-              {{/each}}
-            </div>
             {{#if choices}}
+            <div class="form-fields">
+              {{#if pollTypeIsFPTP }}
+                {{#each choices}}
+                <input type="radio" name="choice" value="{{this}}"><label>{{this}}</label><br>
+                {{/each}}
+              {{/if}}
+              {{#if pollTypeIsAPRV }}
+                {{#each choices}}
+                <input type="checkbox" name="choice" value="{{this}}"><label>{{this}}</label><br>
+                {{/each}}
+              {{/if}}
+            </div>
             <button class="btn">Submit Vote</button>
             {{/if}}
           </form>
@@ -22,7 +29,6 @@
 </template>
 
 <template name="viewvotes">
-  <!--{{#if viewing}}-->
   <div class="section view-votes-section">
     <div class="">
         <div class="section-title">
@@ -38,5 +44,4 @@
         </div>
     </div>
   </div>
-  <!--{{/if}}-->
 </template>

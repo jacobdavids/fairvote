@@ -76,7 +76,7 @@ Template.body.events({
     for (var i=0; i < choiceFields.length; i+=1) {
     	choices.push(choiceFields[i].value);
     }
- 	choices = JSON.stringify(choices);
+ 	  choices = JSON.stringify(choices);
     // Insert a poll into the collection
     var pollID = Polls.insert({
       title: title,
@@ -125,7 +125,7 @@ Template.body.events({
     target.title.value = '';
     target.polltype.value = '';
     target.polltype.style.color = "#999";
-    for (var i=0; i < choiceFields.length; i+=1) {
+    for (var i=0; i < choiceFields.length; i++) {
     	choiceFields[i].value = '';
     }
     target.maxVotes.value = '';
@@ -175,6 +175,12 @@ Template.vote.helpers({
   choices() {
   	return Session.get("currentChoices");
   },
+  pollTypeIsFPTP() {
+    return Session.get("currentPoll").pollType == "FPTP";
+  },
+  pollTypeIsAPRV() {
+    return Session.get("currentPoll").pollType == "APRV";
+  },
 });
 
 
@@ -183,11 +189,10 @@ Template.vote.events({
   'submit .vote-on-poll': function(event, template) {
     // Prevent default browser form submit
     event.preventDefault();
- 
-    // Get selected choice
-    const target = event.target;
-    const choice = target.choice.value;
 
+    // Get target
+    const target = event.target;
+ 
     // Get current poll
     var currentPoll = Session.get("currentPoll");
 
@@ -195,20 +200,37 @@ Template.vote.events({
     var address = currentPoll.contract.address;
 
     // Get poll from address
-  	var poll = web3.eth.contract(currentPoll.contract.abi).at(address);
-   	// Submit vote to poll in block chain
-   	poll.vote(choice, 
-   		{
-   			from: web3.eth.accounts[0], 
-   			gas: 800000
-   		}, 
-   		function (error,success) {
-   			if(success) {
-   				console.log("Vote submitted successfully.")
-          Notifications.success('Success', 'Your vote has been placed successfully.');
-   			} 
-   		}
-   	);
+    var poll = web3.eth.contract(currentPoll.contract.abi).at(address);
+
+    // Store choices selected by user
+    var choices = [];
+    // Check poll type
+    if (currentPoll.pollType == "FPTP") {
+      choices.push(target.choice.value);
+    } else if (currentPoll.pollType == "APRV") {
+      for (var i=0; i < target.choice.length; i++) {
+        if (target.choice[i].checked) {
+          choices.push(target.choice[i].value);
+          target.choice[i].checked = false;
+        }
+      }
+    }
+    // Submit vote for each choice selected by user
+    choices.forEach( function (choice) {
+      // Submit vote to poll in block chain
+      poll.vote(choice, 
+        {
+          from: web3.eth.accounts[0], 
+          gas: 200000
+        }, 
+        function (error,success) {
+          if(success) {
+            console.log("Vote submitted successfully.")
+            Notifications.success('Success', 'Your vote has been placed successfully.');
+          } 
+        }
+      );
+    });
 
    	getVoteEvents();
     $(".vote-section").hide();
