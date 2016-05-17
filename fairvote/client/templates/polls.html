@@ -55,7 +55,9 @@
       Address: {{contract.address}}<br>
       <button class="btn vote-poll">Vote</button>
       <button class="btn view-poll">View</button>
+      {{#if canDeletePoll account}}
       <button class="btn btn-delete delete-poll">Delete</button>
+      {{/if}}
     </li>
   </div>
 </template>

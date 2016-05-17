@@ -71,6 +71,12 @@ li.notification.success {
 	border: 1px solid #3079ed;
 }
 
+li.notification.info {
+	background-color: #e5e5e5;
+    color: #333;
+    border: 1px solid #dcdcdc;
+}
+
 /* Sections */
 .section {
 	margin: 20px auto;
@@ -101,7 +107,8 @@ li.notification.success {
 }
 
 /* Create poll section */
-.create-poll-section {
+.create-poll-section,
+.select-eth-account-section {
 	margin-top: 74px;
 }
 

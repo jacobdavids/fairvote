@@ -4,14 +4,18 @@
 
 <body>
   <div class="container-fluid">
-    {{> header accounts=accounts}}
+    {{> header accounts=accounts currentEthAccount=currentEthAccount}}
     {{> notifications}}
 
-    {{> createpoll}}
-    {{> existingpolls polls=polls}}
+    {{#if currentEthAccount}}
+      {{> createpoll}}
+      {{> existingpolls polls=polls}}
 
-    {{> vote}}
-    {{> viewvotes}}
+      {{> vote}}
+      {{> viewvotes}}
+    {{else}}
+      {{> selectethaccount}}
+    {{/if}}
   </div>
 </body>
 
@@ -22,13 +26,30 @@
         <img src="/images/fairvote.svg" height="24px">
       </div>
       <div class="eth-accounts">
-        <select class="">
+        <select class="select-eth-account">
           <option value="" disabled selected>Select ethereum account</option>
           {{#each accounts}}
-            <option>{{ address}}</option>
+            <!--{{#if currentEthAccount}}
+            <option selected>{{address}}</option>
+            {{else}}-->
+            <option>{{address}}</option>
+            <!--{{/if}}-->
           {{/each}}
         </select>
       </div>
+    </div>
+  </div>
+</template>
+
+<template name="selectethaccount">
+  <div class="section select-eth-account-section">
+    <div class="">
+        <div class="section-title">
+          <h1>Select an Ethereum Account</h1>
+        </div>
+        <div class="section-body">
+            <h3>Please select an Ethereum account to begin.</h3>
+        </div>
     </div>
   </div>
 </template>
