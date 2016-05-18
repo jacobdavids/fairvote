@@ -4,7 +4,7 @@
 
 <body>
   <div class="container-fluid">
-    {{> header accounts=accounts currentEthAccount=currentEthAccount}}
+    {{> header accounts=accounts currentEthAccount=currentEthAccount latestEthBlock=latestEthBlock}}
     {{> notifications}}
 
     {{#if currentEthAccount}}
@@ -22,21 +22,22 @@
 <template name="header">
   <div class="row header">
     <div class="col-lg-12">
+      <div class="block-count">
+        Latest block: {{latestEthBlock.number}}
+      </div>
       <div class="logo">
         <img src="/images/fairvote.svg" height="24px">
       </div>
+      {{#if currentEthAccount}}
       <div class="eth-accounts">
-        <select class="select-eth-account">
-          <option value="" disabled selected>Select ethereum account</option>
+        <select class="select-eth-account form-control">
+          <option value="" disabled>Select ethereum account</option>
           {{#each accounts}}
-            <!--{{#if currentEthAccount}}
-            <option selected>{{address}}</option>
-            {{else}}-->
             <option>{{address}}</option>
-            <!--{{/if}}-->
           {{/each}}
         </select>
       </div>
+      {{/if}}
     </div>
   </div>
 </template>
@@ -45,10 +46,10 @@
   <div class="section select-eth-account-section">
     <div class="">
         <div class="section-title">
-          <h1>Select an Ethereum Account</h1>
+          <h1>Create an Ethereum Account</h1>
         </div>
         <div class="section-body">
-            <h3>Please select an Ethereum account to begin.</h3>
+            <h3>Please create an Ethereum account to continue.</h3>
         </div>
     </div>
   </div>

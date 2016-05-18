@@ -47,12 +47,18 @@ Template.body.onCreated(function bodyOnCreated() {
   // Set session variable for number of choice fields to display
   Session.set("choiceFields", 2);
 
-  // Initialise ethereum accounts package
+  // Initialise ethereum accounts & blocks packages
   EthAccounts.init();
+  EthBlocks.init();
 
   // Set main account (Etherbase) as current account
   var currentEthAccount = EthAccounts.findOne({name: "Main account (Etherbase)"});
-  Session.set("currentEthAccount", currentEthAccount)
+  // Check if ethereum account exists
+  if (currentEthAccount) {
+    // Set current account in session
+    Session.set("currentEthAccount", currentEthAccount)
+    $(".select-eth-account").value = currentEthAccount.address;
+  }
 });
 
 Template.body.helpers({
@@ -64,6 +70,9 @@ Template.body.helpers({
   },
   currentEthAccount() {
     return Session.get("currentEthAccount");
+  },
+  latestEthBlock() {
+    return EthBlocks.latest;
   },
 });
 
