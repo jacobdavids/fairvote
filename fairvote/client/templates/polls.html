@@ -6,20 +6,24 @@
         </div>
         <div class="section-body">
             <form class="new-poll">
-              <input type="text" class="form-control" name="title" placeholder="Poll Title" />
+              <input type="text" class="form-control" name="title" placeholder="Poll title" />
               <select name="polltype" class="form-control select-poll-field">
                 <option value="" disabled selected>Select poll type</option>
                 <option value="FPTP">First past the post</option>
                 <option value="APRV">Approval</option>
               </select>
               <div class="poll-choices">
-              <input type="text" class="form-control" name="choice1" placeholder="Poll Choice 1" />
-              <input type="text" class="form-control" name="choice2" placeholder="Poll Choice 2" />
+              <input type="text" class="form-control" name="choice1" placeholder="Poll choice 1" />
+              <input type="text" class="form-control" name="choice2" placeholder="Poll choice 2" />
               </div>
-              <button class="btn add-choice"><i class="fa fa-plus"></i></button>
-              <button class="btn btn-delete remove-choice"><i class="fa fa-minus"></i></button>
+              <button class="btn fv-btn add-choice"><i class="fa fa-plus"></i></button>
+              <button class="btn fv-btn fv-btn-delete remove-choice"><i class="fa fa-minus"></i></button>
               <input type="text" class="form-control" name="maxVotes" placeholder="Maximum Votes" />
-              <button class="btn">Create Poll</button>
+              <div class="input-group datetimepicker">
+                <input type="text" class="form-control" placeholder="Select end date" />
+                <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+              </div>
+              <button class="btn fv-btn">Create Poll</button>
             </form>
         </div>
     </div>
@@ -55,10 +59,10 @@
       Active: {{active}}<br>
       Choices: {{choices}}<br>
       Address: {{contract.address}}<br>
-      <button class="btn vote-poll">Vote</button>
-      <button class="btn view-poll">View</button>
+      <button class="btn fv-btn vote-poll">Vote</button>
+      <button class="btn fv-btn view-poll">View</button>
       {{#if canDeletePoll account}}
-      <button class="btn btn-delete delete-poll">Delete</button>
+      <button class="btn fv-btn fv-btn-delete delete-poll">Delete</button>
       {{/if}}
     </li>
   </div>

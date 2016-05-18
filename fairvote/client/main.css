@@ -12,7 +12,7 @@ body {
 	padding: 0px;
 }
 
-.btn {
+.fv-btn {
 	width: 100%;
     display: block;
     border: 1px solid #3079ed;
@@ -22,17 +22,17 @@ body {
     font-weight: bold;
 }
 
-.btn:hover {
+.fv-btn:hover {
 	background: #3079ed;
 	color: white;
 }
 
-.btn-delete {
+.fv-btn-delete {
 	background: #db3236;
 	border: 1px solid #bc313c;
 }
 
-.btn-delete:hover {
+.fv-btn-delete:hover {
 	background: #bc313c;
 	color: white;
 }
@@ -159,7 +159,9 @@ li.notification.info {
 	width:  300px;
 }
 
-.new-poll .form-control {
+.new-poll .form-control,
+.input-group,
+.input-group-addon {
 	border-radius: 0px;
 	margin-bottom: 20px;
 }
@@ -187,6 +189,45 @@ li.notification.info {
 	margin-bottom: 20px;
 	float: right;
 	margin-left: 10px;
+}
+
+.input-group .form-control:first-child {
+	margin: 0;
+}
+
+.bootstrap-datetimepicker-widget table td.active,
+.bootstrap-datetimepicker-widget table td.active:hover,
+.bootstrap-datetimepicker-widget table td span.active {
+	background: #4d90fe;
+}
+
+.bootstrap-datetimepicker-widget table td span.active:hover {
+	color: white;
+}
+
+.datetimepicker a {
+	color: #4d90fe;
+}
+
+.bootstrap-datetimepicker-widget table td.today:before {
+	border-bottom-color: #4d90fe;
+}
+
+.bootstrap-datetimepicker-widget table td button {
+    background: #4D90fe !important;
+    color: #ffffff !important;
+    border: 1px solid #3079ed !important;
+    text-shadow: 0 1px rgba(0,0,0,0.1);
+}
+
+.bootstrap-datetimepicker-widget table td button:hover {
+    background: #3079ed;
+	color: white;
+	border: 1px solid #3079ed;
+}
+
+.bootstrap-datetimepicker-widget table td span:hover {
+	color: #3079ed;
 }
 
 /* Existing polls section */

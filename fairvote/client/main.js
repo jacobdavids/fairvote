@@ -189,6 +189,13 @@ Template.body.events({
   },
 });
 
+Template.createpoll.onRendered(function () {
+  // Initiate datetime picker
+  $('.datetimepicker').datetimepicker({
+    allowInputToggle: true,
+  });
+});
+
 Template.vote.onCreated(function voteOnCreated() {
   // init reactive variables
   this.choices = new ReactiveVar([]);
