@@ -87,6 +87,7 @@ Template.body.events({
     const title = target.title.value;
     const pollType = target.polltype.value;
     const maxVotes = target.maxVotes.value;
+    const finishDate = Date.parse(target.finishDate.value);
     // Get number of choice fields from session variable
     var numChoiceFields = Session.get("choiceFields");
     var choiceFields = target.children.item(2).children;
@@ -109,6 +110,7 @@ Template.body.events({
   var _pollType = pollType;
 	var _choices = choices;
 	var _maxVotes = maxVotes;
+  var _finishDate = finishDate;
 	var _finishDate = '146304148900';
 	var pollContract = web3.eth.contract([{ constant: false, inputs: [], name: "kill", outputs: [], type: "function" }, { constant: true, inputs: [], name: "p", outputs: [{ name: "owner", type: "address" }, { name: "title", type: "string" }, { name: "pollType", type: "string" }, { name: "choices", type: "string" }, { name: "maxVotes", type: "uint256" }, { name: "numVotes", type: "uint256" }, { name: "finishDate", type: "uint256" }, { name: "active", type: "bool" }], type: "function" }, { constant: false, inputs: [], name: "deactivatePoll", outputs: [{ name: "", type: "bool" }], type: "function" }, { constant: false, inputs: [{ name: "choice", type: "string" }], name: "vote", outputs: [{ name: "", type: "bool" }], type: "function" }, { inputs: [{ name: "_title", type: "string" }, { name: "_pollType", type: "string" }, { name: "_choices", type: "string" }, { name: "_maxVotes", type: "uint256" }, { name: "_finishDate", type: "uint256" }], type: "constructor" }, { anonymous: false, inputs: [{ indexed: false, name: "choice", type: "string" }], name: "Vote", type: "event" }]);
 	var poll = pollContract.new(
