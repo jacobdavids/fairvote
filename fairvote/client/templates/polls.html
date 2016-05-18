@@ -36,6 +36,8 @@
             <ul class="all-polls row">
               {{#each polls}}
                 {{> poll}}
+              {{else}}
+                <h3>No polls currently exist. Create one!</h3>
               {{/each}}
             </uL>
         </div>
