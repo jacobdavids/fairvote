@@ -193,6 +193,7 @@ li.notification.info {
 
 .input-group .form-control:first-child {
 	margin: 0;
+	z-index: 1;
 }
 
 .bootstrap-datetimepicker-widget table td.active,
@@ -246,7 +247,7 @@ li.notification.info {
     border: 1px solid #e5e5e5;
     padding: 10px;
 	text-align: center;
-	height: 340px;
+	height: 360px;
 }
 
 .all-polls li strong {
@@ -261,6 +262,28 @@ li.notification.info {
 
 .existing-polls-section {
 	padding: 10px;
+}
+
+.poll-info-field {
+	margin-bottom: 10px;
+}
+
+.label,
+.poll-info-field label {
+	font-size: 14px;
+	margin: 0px;
+}
+
+.label-primary {
+	border: 1px solid #3079ed;
+    text-shadow: 0 1px rgba(0,0,0,0.1);
+    background-color: #4d90fe;
+}
+
+.label-danger {
+	background: #db3236;
+	text-shadow: 0 1px rgba(0,0,0,0.1);
+	border: 1px solid #bc313c;
 }
 
 /* Vote section */

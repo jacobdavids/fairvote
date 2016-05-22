@@ -1,6 +1,5 @@
 import { Meteor } from 'meteor/meteor';
 import { Polls } from '../imports/api/polls.js';
-import { Votes } from '../imports/api/votes.js';
 
 web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8080'));
 
