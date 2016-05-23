@@ -46,12 +46,19 @@
             {{#if pollIsActive }}
             <h4>Votes are still being collected for this poll.</h4>
             {{else}}
-            <h4>This poll has ended. The winner was:</h4>
+              {{#if winner}}
+              <h4>This poll has ended. The winner was: {{winner}}</h4>
+              {{else}}
+              <h4>This poll has ended. There was no clear winner.</h4>
+              {{/if}}
             {{/if}}
-            <h3>Vote ledger</h3>
-            {{#each poll.votes}}
-            <span>{{sender}}:&nbsp;</span><span>{{choice}}</span><br>
-            {{/each}}
+            {{#if poll.votes}}
+              <h3>Vote ledger</h3>
+              {{#each poll.votes}}
+              <span>{{sender}}:&nbsp;</span><span>{{choice}}</span><br>
+              {{/each}}
+            {{/if}}
+
         </div>
     </div>
   </div>

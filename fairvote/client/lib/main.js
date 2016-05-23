@@ -1,9 +1,9 @@
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { Session } from 'meteor/session'
-import { Polls } from '../imports/api/polls.js';
+import { Polls } from '../../imports/api/polls.js';
 
-import './templates/main.html';
+import '../templates/main.html';
 
 Meteor.startup(function () {
     _.extend(Notifications.defaultOptions, {
@@ -338,15 +338,33 @@ Template.viewvotes.helpers({
   },
   pollIsActive() {
     var currentPoll = Session.get("currentPoll");
-    if (this.contract) {
-      // Get poll
-      var poll = web3.eth.contract(this.contract.abi).at(this.contract.address);
+    if (currentPoll) {
+      if (currentPoll.contract) {
+        // Get poll
+        var poll = web3.eth.contract(currentPoll.contract.abi).at(currentPoll.contract.address);
 
-      // Get if poll is active
-      var pollIsActive = poll.p()[7];
+        // Get if poll is active
+        var pollIsActive = poll.p()[7];
 
-      return pollIsActive;
+        return pollIsActive;
+      }
     }
+  },
+  winner() {
+    // Wont work if the result is a draw...
+    var countedVotes = Session.get("countedVotes");
+    var maxVotes = 0;
+    var winner = '';
+    countedVotes.forEach( function (countedVote) {
+      if (countedVote.numVotes == maxVotes) {
+        winner = false;
+      }
+      if (countedVote.numVotes > maxVotes) {
+        maxVotes = countedVote.numVotes;
+        winner = countedVote.choice;
+      }
+    });
+    return winner;
   },
 });
 
