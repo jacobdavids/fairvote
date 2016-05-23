@@ -57,18 +57,9 @@ contract poll is mortal {
 
     if (p.maxVotes > 0) {
       if (p.numVotes >= p.maxVotes) {
-        deactivatePoll();
+        p.active = false;
       }
     }
-    return true;
-  }
-
-  /* Function to dectivate poll */
-  function deactivatePoll() returns (bool) {
-    if (msg.sender != p.owner) {
-      return false;
-    }
-    p.active = false;
     return true;
   }
 }

@@ -43,6 +43,11 @@
               <span>{{choice}}:&nbsp;</span><span>{{numVotes}}</span><br>
             {{/each}}
             </div>
+            {{#if pollIsActive }}
+            <h4>Votes are still being collected for this poll.</h4>
+            {{else}}
+            <h4>This poll has ended. The winner was:</h4>
+            {{/if}}
             <h3>Vote ledger</h3>
             {{#each poll.votes}}
             <span>{{sender}}:&nbsp;</span><span>{{choice}}</span><br>
