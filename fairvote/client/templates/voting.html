@@ -35,12 +35,18 @@
           <h1>View Votes</h1>
         </div>
         <div class="section-body">
-            <h3>Please note that votes recently made will be displayed as soon as the next block has been generated.</h3>
+            <h3>Displaying votes for "{{poll.title}}"</h3>
+            <h4>Please note that votes recently made will be displayed as soon as the next block has been generated.</h4>
+            <h3>Vote count</h3>
             <div class="form-fields">
             {{#each votes}}
               <span>{{choice}}:&nbsp;</span><span>{{numVotes}}</span><br>
             {{/each}}
             </div>
+            <h3>Vote ledger</h3>
+            {{#each poll.votes}}
+            <span>{{sender}}:&nbsp;</span><span>{{choice}}</span><br>
+            {{/each}}
         </div>
     </div>
   </div>

@@ -51,13 +51,17 @@ function getVoteEvents() {
 		},
 		function(err, result) {
 			if (!err) {
-        Polls.update(Session.get("currentPoll")._id, {
+        var voterAddresses = Session.get("currentPoll").voters;
+        if ($.inArray(result.args.sender, voterAddresses) < 0) {
+          // Sender has not voted yet
+          Polls.update(Session.get("currentPoll")._id, {
           $push: {
             votes: result.args,
             voters: result.args.sender,
           },
         });
-				console.log(result.args.choice);
+        console.log(result.args.choice);
+        }
 			} 
 	});
 }
@@ -106,6 +110,7 @@ function observePolls(){
         var choices = JSON.parse(newDocument.choices);
         var countedVotes = countVotes(choices, newDocument.votes);
         Session.set("countedVotes", countedVotes);
+        Session.set("currentPoll", newDocument);
       }
     },
     removed: function(newDocument){
@@ -325,6 +330,9 @@ Template.viewvotes.helpers({
   votes() {
     // Get counted votes array from session data
     return Session.get("countedVotes");
+  },
+  poll() {
+    return Session.get("currentPoll");
   },
 });
 
