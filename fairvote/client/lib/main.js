@@ -15,19 +15,28 @@ countVotes = function(choices, votes){
   var countedVotes = [];
   // Check if choices exist
   if (choices) {
-    // Loop through choices for poll
+    // Get current poll stored in session
+    var currentPoll = Session.get("currentPoll");
+    
+    // Loop through each choice for poll
     choices.forEach( function (choice) {
       // Count votes for each choice
       var numVotes = 0;
       votes.forEach( function (vote) {
-         if (choice == vote.choice) {
+        // Counting style is dependant on poll type
+        if ((currentPoll.pollType == "AV") && (choice == vote.choice) &&
+            (vote.preference == "1")) {
+          // For alternative polls, only count votes that are marked as first preference
+          numVotes += 1;
+        } else if ((currentPoll.pollType != "AV") && (choice == vote.choice)) {
+          // For other polls, count all valid choices as votes
            numVotes += 1;
          }
        });
       // Add count of votes for each choice to array
       countedVotes.push({choice: choice, numVotes: numVotes});
     });
-  return countedVotes;
+    return countedVotes;
   }
 }
 
