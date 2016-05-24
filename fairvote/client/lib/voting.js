@@ -2,11 +2,22 @@ Template.vote.helpers({
   choices() {
   	return Session.get("currentChoices");
   },
+  preferenceNumbers() {
+    var numCurrentChoices = Session.get("currentChoices").length;
+    var preferenceNumbers = [];
+    for (var i = 1; i < (numCurrentChoices+1); i++) {
+      preferenceNumbers.push(i);
+    }
+    return preferenceNumbers;
+  },
   pollTypeIsFPTP() {
     return Session.get("currentPoll").pollType == "FPTP";
   },
   pollTypeIsAPRV() {
     return Session.get("currentPoll").pollType == "APRV";
+  },
+  pollTypeIsAV() {
+    return Session.get("currentPoll").pollType == "AV";
   },
 });
 
@@ -28,24 +39,37 @@ Template.vote.events({
     // Get poll from address
     var poll = web3.eth.contract(currentPoll.contract.abi).at(address);
 
-    // Store choices selected by user
-    var choices = [];
+    // Store votes selected by user on voting form
+    var votes = [];
     // Check poll type
     if (currentPoll.pollType == "FPTP") {
-      choices.push(target.choice.value);
+      // First past the post poll (preferences are only relevant for alternative polls)
+      votes.push({choice: target.choice.value, preference: ''});
     } else if (currentPoll.pollType == "APRV") {
+      // Approval poll
       for (var i=0; i < target.choice.length; i++) {
         if (target.choice[i].checked) {
-          choices.push(target.choice[i].value);
+          votes.push({choice: target.choice[i].value, preference: ''});
           target.choice[i].checked = false;
         } else {
-          choices.push('');
+          votes.push({choice: '', preference: ''});
         }
       }
-    }
+    } else if (currentPoll.pollType == "AV") {
+      // Alternative poll
+      // Get preferences from select inputs, use same index to get choices form hidden input fields
+      for (var i=0; i < target.preference.length; i++) {
+        if (target.preference[i].value) {
+          votes.push({choice: target.choice[i].value, preference: target.preference[i].value});
+          target.preference[i].value = '';
+        } else {
+          votes.push({choice: '', preference: target.preference[i].value});
+        }
+      }
+    }  
 
     // Submit vote for each choice selected by user
-    submitVotes(poll, choices);
+    submitVotes(poll, votes);
 
     // Notify user their vote has been received
     Notifications.info('Info', 'Your vote is waiting to be mined.');

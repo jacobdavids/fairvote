@@ -14,7 +14,7 @@ Meteor.startup(function () {
 countVotes = function(choices, votes){
   var countedVotes = [];
   // Check if choices exist
-  if (choices) {    
+  if (choices) {
     // Loop through choices for poll
     choices.forEach( function (choice) {
       // Count votes for each choice
@@ -96,7 +96,7 @@ Template.body.events({
     // Calculate max votes for poll
     if (pollType == "FPTP") {
       maxVotes = maxVoters;
-    } else if (pollType == "APRV") {
+    } else if ((pollType == "APRV") || (pollType == "AV")) {
       maxVotes = numChoiceFields*parseInt(maxVoters);
       maxVotes = maxVotes.toString();
     }

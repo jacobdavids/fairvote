@@ -19,6 +19,18 @@
                 <input type="checkbox" name="choice" value="{{this}}"><label>{{this}}</label><br>
                 {{/each}}
               {{/if}}
+              {{#if pollTypeIsAV }}
+                {{#each choices}}
+                <select name="preference" class="form-control preference-selection">
+                  <option value="" disabled selected>---</option>
+                  {{#each preferenceNumbers}}
+                  <option value="{{this}}">{{this}}</option>
+                  {{/each}}
+                </select>
+                <input type="checkbox" name="choice" value="{{this}}" hidden>
+                <label>{{this}}</label><br>
+                {{/each}}
+              {{/if}}
             </div>
             <button class="btn fv-btn">Submit Vote</button>
             {{/if}}
@@ -44,7 +56,7 @@
             {{/each}}
             </div>
             {{#if pollIsActive }}
-            <h4>Votes are still being collected for this poll.</h4>
+            <h4>This poll is active. Votes are still being collected for this poll.</h4>
             {{else}}
               {{#if winner}}
               <h4>This poll has ended. The winner was: {{winner}}</h4>
@@ -56,7 +68,11 @@
               <h3>Vote ledger</h3>
               {{#each poll.votes}}
                 {{#if choice}}
-                <span>{{sender}} voted for {{choice}}</span><br>
+                  {{#if preference}}
+                  <span>{{sender}} voted for {{choice}} with preference {{preference}}</span><br>
+                  {{else}}
+                  <span>{{sender}} voted for {{choice}}</span><br>
+                  {{/if}}
                 {{/if}}
               {{/each}}
             {{/if}}

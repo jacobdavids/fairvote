@@ -29,7 +29,7 @@ contract poll is mortal {
   }
 
   /* Event to call when a vote is placed */
-  event Vote(string choice, address sender);
+  event Vote(string choice, string preference, address sender);
 
   /* Define public Poll p */
   Poll public p;
@@ -47,13 +47,13 @@ contract poll is mortal {
   }
 
   /* Function to handle the process of voting, when maxVotes reached poll is deactivated */
-  function vote(string choice) returns (bool) {
+  function vote(string choice, string preference) returns (bool) {
     if (p.active != true) {
       return false;
     }
 
     p.numVotes += 1;
-    Vote(choice, msg.sender);
+    Vote(choice, preference, msg.sender);
 
     if (p.maxVotes > 0) {
       if (p.numVotes >= p.maxVotes) {

@@ -313,6 +313,11 @@ li.notification.info {
 	margin-top: 0px;
 }
 
+.form-fields .preference-selection {
+	display: inline-block;
+	width: 40px;
+}
+
 /* View votes section */
 .view-votes-section {
 	display: none;
