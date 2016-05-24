@@ -7,7 +7,7 @@
         <div class="section-body">
             <form class="new-poll">
               <input type="text" class="form-control" name="title" placeholder="Poll title" />
-              <select name="polltype" class="form-control select-poll-field">
+              <select name="pollType" class="form-control select-poll-field">
                 <option value="" disabled selected>Select poll type</option>
                 <option value="FPTP">First past the post</option>
                 <option value="APRV">Approval</option>
@@ -18,7 +18,7 @@
               </div>
               <button class="btn fv-btn add-choice"><i class="fa fa-plus"></i></button>
               <button class="btn fv-btn fv-btn-delete remove-choice"><i class="fa fa-minus"></i></button>
-              <input type="text" class="form-control" name="maxVotes" placeholder="Maximum votes" />
+              <input type="text" class="form-control" name="maxVoters" placeholder="Maximum voters" />
               <div class="input-group datetimepicker">
                 <input type="text" class="form-control" name="finishDate" placeholder="Select finish date" />
                 <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
@@ -37,13 +37,13 @@
           <h1>Existing Polls</h1>
         </div>
         <div class="section-body existing-polls-section">
-            <ul class="all-polls row">
-              {{#each polls}}
-                {{> poll}}
-              {{else}}
-                <h3>No polls currently exist. Create one!</h3>
-              {{/each}}
-            </uL>
+          <ul class="all-polls row">
+            {{#each polls}}
+              {{> poll}}
+            {{else}}
+              <h3>No polls currently exist. Create one!</h3>
+            {{/each}}
+          </ul>
         </div>
     </div>
   </div>
@@ -62,7 +62,7 @@
       </div>
       {{else}}
       <div class="poll-info-field">
-        <label class="">{{numVotesReceived}}/{{maxVotes}} votes received</label>
+        <label class="">{{numBallotsReceived}}/{{maxVoters}} ballots received</label>
       </div>
       {{/if}}
       {{#if pollIsActive }}

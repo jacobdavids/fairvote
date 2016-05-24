@@ -38,12 +38,17 @@ Template.vote.events({
         if (target.choice[i].checked) {
           choices.push(target.choice[i].value);
           target.choice[i].checked = false;
+        } else {
+          choices.push('');
         }
       }
     }
 
     // Submit vote for each choice selected by user
     submitVotes(poll, choices);
+
+    // Notify user their vote has been received
+    Notifications.info('Info', 'Your vote is waiting to be mined.');
 
     // Get vote events from blockchain for this poll
    	getVoteEvents();

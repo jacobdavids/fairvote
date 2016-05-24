@@ -26,8 +26,8 @@ Template.poll.helpers({
     }
     return false
   },
-  numVotesReceived() {
-    return this.votes.length;
+  numBallotsReceived() {
+    return this.voters.length;
   },
   pollIsActive() {
     if (this.contract) {

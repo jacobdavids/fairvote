@@ -20,16 +20,54 @@ getVoteEvents = function(){
 		},
 		function(err, result) {
 			if (!err) {
-        var voterAddresses = Session.get("currentPoll").voters;
+        var currentPoll = Session.get("currentPoll");
+        var voterAddresses = currentPoll.voters;
+        var pollType = currentPoll.pollType;
+        
+        // Ensure senders address does not exist inside list of voters
         if ($.inArray(result.args.sender, voterAddresses) < 0) {
-          // Sender has not voted yet
-          Polls.update(Session.get("currentPoll")._id, {
-          $push: {
-            votes: result.args,
-            voters: result.args.sender,
-          },
-        });
-        console.log(result.args.choice);
+          if (pollType == "FPTP") {
+            // Add vote to list of votes and senders address to list of voters for poll
+            Polls.update(currentPoll._id, {
+              $push: {
+                votes: result.args,
+                voters: result.args.sender,
+              },
+            });
+            Notifications.success('Success', 'Your vote is now live on the blockchain.');
+          } else if (pollType == "APRV") {
+            // Add vote to list of votes for poll
+            Polls.update(currentPoll._id, {
+              $push: {
+                votes: result.args,
+              },
+            });
+            // Update current poll
+            var currentPoll = Session.get("currentPoll");
+
+            var votes = currentPoll.votes;
+            var maxVotes = currentPoll.maxVotes;
+            var maxVoters = currentPoll.maxVoters;
+
+            // Count number of votes received from senders address
+            var votesReceived = 0;
+            votes.forEach( function (vote) {
+              if (vote.sender == result.args.sender) {
+                votesReceived += 1;
+              }
+            });
+
+            // Check if this vote is last one permitted from senders address
+            if (votesReceived == (maxVotes/maxVoters)) {
+              // Add senders address to list of voters for poll
+              Polls.update(currentPoll._id, {
+                $push: {
+                  voters: result.args.sender,
+                },
+              });
+              Notifications.success('Success', 'Your vote is now live on the blockchain.');
+            }
+          }
         }
 			} 
 	});
@@ -100,7 +138,6 @@ submitVotes = function(poll, choices){
       function (error,success) {
         if(success) {
           console.log("Vote submitted successfully.")
-          Notifications.success('Success', 'Your vote has been placed successfully.');
         } 
       }
     );

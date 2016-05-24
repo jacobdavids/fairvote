@@ -78,8 +78,9 @@ Template.body.events({
     // Get input poll data
     const target = event.target;
     const title = target.title.value;
-    const pollType = target.polltype.value;
-    const maxVotes = target.maxVotes.value;
+    const pollType = target.pollType.value;
+    const maxVoters = target.maxVoters.value;
+    var maxVotes = 0;
     const finishDate = Date.parse(target.finishDate.value);
 
     // Get number of choice fields from session variable
@@ -92,12 +93,21 @@ Template.body.events({
     // Convert choices array to string for storage in contract
     choices = JSON.stringify(choices);
 
+    // Calculate max votes for poll
+    if (pollType == "FPTP") {
+      maxVotes = maxVoters;
+    } else if (pollType == "APRV") {
+      maxVotes = numChoiceFields*parseInt(maxVoters);
+      maxVotes = maxVotes.toString();
+    }
+
     // Insert a poll into the collection
     var pollID = Polls.insert({
       title: title,
       pollType: pollType,
       choices: choices,
       maxVotes: maxVotes,
+      maxVoters: maxVoters,
       finishDate: finishDate,
       voters: [],
       votes: [],
@@ -106,12 +116,12 @@ Template.body.events({
  
     // Clear form
     target.title.value = '';
-    target.polltype.value = '';
-    target.polltype.style.color = "#999";
+    target.pollType.value = '';
+    target.pollType.style.color = "#999";
     for (var i=0; i < choiceFields.length; i++) {
     	choiceFields[i].value = '';
     }
-    target.maxVotes.value = '';
+    target.maxVoters.value = '';
     target.finishDate.value = '';
 
     // Reset number of choice fields to 2
