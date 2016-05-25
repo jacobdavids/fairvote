@@ -54,40 +54,46 @@
   <div class="col-md-4">
     <li class="poll-container">
       <h4><strong>{{title}}</strong></h4>
-      <div class="poll-info-field">
-        <label class="label label-primary">{{pollType}}</label>
+      <div class="poll-info">
+        <div class="poll-info-field">
+          <label class="label label-primary">{{pollType}}</label>
+        </div>
+        {{#if maxVotesReached}}
+        <div class="poll-info-field">
+          <label class="label label-danger">Maximum votes reached</label>
+        </div>
+        {{else}}
+        <div class="poll-info-field">
+          <label class="">{{numBallotsReceived}}/{{maxVoters}} ballots received</label>
+        </div>
+        {{/if}}
+        {{#if pollIsActive }}
+        <div class="poll-info-field">
+          <label class="label label-primary">{{getPollStatus pollIsActive}}</label>
+        </div>
+        {{else}}
+        <div class="poll-info-field">
+          <label class="label label-danger">{{getPollStatus pollIsActive}}</label>
+        </div>
+        {{/if}}
       </div>
-      {{#if maxVotesReached}}
-      <div class="poll-info-field">
-        <label class="label label-danger">Maximum votes reached</label>
+      <!--Choices: {{choices}}<br>
+      Address: {{contract.address}}<br>-->
+      <div class="poll-buttons">
+        {{#if voted}}
+        <div class="poll-info-field">
+          <label class="">You have voted on this poll</label>
+        </div>
+        {{else}}
+        <button class="btn fv-btn vote-poll">Vote</button>
+        {{/if}}
+        <button class="btn fv-btn view-poll">View</button>
+        {{#if canDeletePoll account}}
+        <button class="btn fv-btn fv-btn-delete delete-poll">Delete</button>
+        {{else}}
+        <button class="btn fv-btn fv-btn-delete delete-poll disabled">Delete</button>
+        {{/if}}
       </div>
-      {{else}}
-      <div class="poll-info-field">
-        <label class="">{{numBallotsReceived}}/{{maxVoters}} ballots received</label>
-      </div>
-      {{/if}}
-      {{#if pollIsActive }}
-      <div class="poll-info-field">
-        <label class="label label-primary">{{getPollStatus pollIsActive}}</label>
-      </div>
-      {{else}}
-      <div class="poll-info-field">
-        <label class="label label-danger">{{getPollStatus pollIsActive}}</label>
-      </div>
-      {{/if}}
-      Choices: {{choices}}<br>
-      Address: {{contract.address}}<br>
-      {{#if voted}}
-      <div class="poll-info-field">
-        <label class="">You have already voted on this poll</label>
-      </div>
-      {{else}}
-      <button class="btn fv-btn vote-poll">Vote</button>
-      {{/if}}
-      <button class="btn fv-btn view-poll">View</button>
-      {{#if canDeletePoll account}}
-      <button class="btn fv-btn fv-btn-delete delete-poll">Delete</button>
-      {{/if}}
     </li>
   </div>
 </template>

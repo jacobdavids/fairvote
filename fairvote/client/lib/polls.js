@@ -49,16 +49,19 @@ Template.poll.helpers({
 });
 
 Template.poll.events({
-  'click .delete-poll'() {
-    // Get poll from blockchain
-    var poll = web3.eth.contract(this.contract.abi).at(this.contract.address);
+  'click .delete-poll'(event) {
+    // Check that delete button is not disabled
+    if (!$(event.target).hasClass("disabled")) {
+      // Get poll from blockchain
+      var poll = web3.eth.contract(this.contract.abi).at(this.contract.address);
 
-  	// Kill poll from blockchain
-    poll.kill.sendTransaction({from: Session.get("currentEthAccount").address});
+    	// Kill poll from blockchain
+      poll.kill.sendTransaction({from: Session.get("currentEthAccount").address});
 
-    // Remove poll from database
-  	Polls.remove(this._id);
-  	console.log("Poll deleted from blockchain");
+      // Remove poll from database
+    	Polls.remove(this._id);
+    	console.log("Poll deleted from blockchain");
+    }
   },
   'click .vote-poll'() {
     // Get poll

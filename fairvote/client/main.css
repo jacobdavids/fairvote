@@ -245,19 +245,27 @@ li.notification.info {
 .all-polls li {
     background-color: #f9f9f9;
     border: 1px solid #e5e5e5;
-    padding: 10px;
+    padding: 15px;
 	text-align: center;
-	height: 360px;
+	height: 351px;
 }
 
 .all-polls li strong {
 	margin-bottom: 10px !important;
 }
 
+.all-polls li h4 {
+	min-height: 57px;
+}
+
 .all-polls li button {
 	width: 50%;
 	margin: 10px auto;
 	margin-bottom: 0px;
+}
+
+.poll-info {
+	margin-bottom: 30px;
 }
 
 .existing-polls-section {
@@ -272,6 +280,10 @@ li.notification.info {
 .poll-info-field label {
 	font-size: 14px;
 	margin: 0px;
+}
+
+.poll-buttons .poll-info-field label {
+	line-height: 34px;
 }
 
 .label-primary {
