@@ -11,7 +11,7 @@
                 <option value="" disabled selected>Select poll type</option>
                 <option value="FPTP">First past the post</option>
                 <option value="APRV">Approval</option>
-                <option value="AV">Alternative</option>
+                <option value="ALTR">Alternative</option>
               </select>
               <div class="poll-choices">
               <input type="text" class="form-control" name="choice1" placeholder="Poll choice 1" />
@@ -56,7 +56,7 @@
       <h4><strong>{{title}}</strong></h4>
       <div class="poll-info">
         <div class="poll-info-field">
-          <label class="label label-primary">{{pollType}}</label>
+          <label class="label label-primary">{{getFullPollTypeName pollType}}</label>
         </div>
         {{#if maxVotesReached}}
         <div class="poll-info-field">

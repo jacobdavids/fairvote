@@ -125,8 +125,8 @@ Template.vote.helpers({
   pollTypeIsAPRV() {
     return Session.get("currentPoll").pollType == "APRV";
   },
-  pollTypeIsAV() {
-    return Session.get("currentPoll").pollType == "AV";
+  pollTypeIsALTR() {
+    return Session.get("currentPoll").pollType == "ALTR";
   },
 });
 
@@ -164,7 +164,7 @@ Template.vote.events({
           votes.push({choice: '', preference: ''});
         }
       }
-    } else if (currentPoll.pollType == "AV") {
+    } else if (currentPoll.pollType == "ALTR") {
       // Alternative poll
       // Get preferences from select inputs, use same index to get choices form hidden input fields
       for (var i=0; i < target.preference.length; i++) {
@@ -228,7 +228,7 @@ Template.viewvotes.helpers({
 
     // Get winner for poll
     var winner;
-    if (currentPoll.pollType == "AV") {
+    if (currentPoll.pollType == "ALTR") {
       // Calculate winner using alternative vote methodology
       winner = getWinnerAV();
     } else {

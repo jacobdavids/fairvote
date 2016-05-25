@@ -46,6 +46,15 @@ Template.poll.helpers({
     }
     return "Inactive";
   },
+  'getFullPollTypeName': function(pollType) {
+    if (pollType == "FPTP") {
+      return "First past the post";
+    } else if (pollType == "APRV") {
+      return "Approval";
+    } else if (pollType == "ALTR") {
+      return "Alternative";
+    }
+  },
 });
 
 Template.poll.events({

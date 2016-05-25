@@ -108,7 +108,7 @@ getVoteEvents = function(){
               },
             });
             Notifications.success('Success', 'Your vote is now live on the blockchain.');
-          } else if ((pollType == "APRV") || (pollType == "AV")) {
+          } else if ((pollType == "APRV") || (pollType == "ALTR")) {
             // Add vote to list of votes for poll
             Polls.update(currentPoll._id, {
               $push: {

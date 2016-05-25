@@ -24,11 +24,11 @@ countVotes = function(choices, votes){
       var numVotes = 0;
       votes.forEach( function (vote) {
         // Counting style is dependant on poll type
-        if ((currentPoll.pollType == "AV") && (choice == vote.choice) &&
+        if ((currentPoll.pollType == "ALTR") && (choice == vote.choice) &&
             (vote.preference == "1")) {
           // For alternative polls, only count votes that are marked as first preference
           numVotes += 1;
-        } else if ((currentPoll.pollType != "AV") && (choice == vote.choice)) {
+        } else if ((currentPoll.pollType != "ALTR") && (choice == vote.choice)) {
           // For other polls, count all valid choices as votes
            numVotes += 1;
          }
@@ -105,7 +105,7 @@ Template.body.events({
     // Calculate max votes for poll
     if (pollType == "FPTP") {
       maxVotes = maxVoters;
-    } else if ((pollType == "APRV") || (pollType == "AV")) {
+    } else if ((pollType == "APRV") || (pollType == "ALTR")) {
       maxVotes = numChoiceFields*parseInt(maxVoters);
       maxVotes = maxVotes.toString();
     }
