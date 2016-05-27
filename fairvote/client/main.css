@@ -112,6 +112,11 @@ li.notification.success {
 	border: 1px solid #3079ed;
 }
 
+li.notification.error {
+	background: #db3236;
+	border: 1px solid #bc313c;
+}
+
 li.notification.info {
 	background-color: #f5f5f5;
     color: #333;

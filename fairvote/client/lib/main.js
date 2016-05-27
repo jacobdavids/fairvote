@@ -11,7 +11,7 @@ Meteor.startup(function () {
     });
 });
 
-countVotes = function(choices, votes){
+countVotes = function(choices, votes) {
   var countedVotes = [];
   // Check if choices exist
   if (choices) {
@@ -38,6 +38,52 @@ countVotes = function(choices, votes){
     });
     return countedVotes;
   }
+}
+
+validatePollForm = function(target) {
+  // Check title is valid
+  var title = target.title.value;
+  if (title == "") {
+    Notifications.error('Error', 'Poll title cannot be empty. Please enter a poll title.');
+    return false;
+  }
+
+  // Check poll type is valid
+  var pollType = target.pollType.value;
+  if (pollType == "") {
+    Notifications.error('Error', 'Poll type cannot be empty. Please select a poll type.');
+    return false;
+  }
+
+  // Check if choice fields are valid
+  var numChoiceFields = Session.get("choiceFields");
+  var choiceFields = target.children.item(2).children;
+  for (var i=0; i < choiceFields.length; i+=1) {
+    if (choiceFields[i].value == "") {
+      Notifications.error('Error', 'Choices cannot be empty. Please enter text for each choice.');
+      return false;
+    }
+  }
+
+  // Check maximum voters is valid
+  var maxVoters = target.maxVoters.value;
+  if (maxVoters == "") {
+    Notifications.error('Error', 'Maximum voters cannot be empty. Please enter a value for maximum voters.');
+    return false;
+  }
+  if (maxVoters == "0") {
+    Notifications.error('Error', 'Maximum voters cannot be zero. Please enter a positive value for maximum voters.');
+    return false;
+  }
+
+  // Check finish date is valid
+  var finishDate = target.finishDate.value;
+  if (finishDate == "") {
+    Notifications.error('Error', 'Finish date cannot be empty. Please select a finish date.');
+    return false;
+  }
+
+  return true;
 }
 
 Template.body.onCreated(function bodyOnCreated() {
@@ -84,8 +130,16 @@ Template.body.events({
     // Prevent default browser form submit
     event.preventDefault();
  
-    // Get input poll data
+    // Get target (form)
     const target = event.target;
+
+    // Check if form is valid
+    var valid = validatePollForm(target);
+    if (!valid) {
+      return;
+    }
+
+    // Get input poll data from target
     const title = target.title.value;
     const pollType = target.pollType.value;
     const maxVoters = target.maxVoters.value;
