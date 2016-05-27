@@ -4,6 +4,7 @@ zeroPad = function(unit){
   if (unit < 10) {
     return "0" + unit;
   }
+  return unit;
 }
 
 Template.createpoll.onRendered(function () {
@@ -77,14 +78,14 @@ Template.poll.helpers({
     var hour = finishDate.getHours().toString();
     hour = hour % 12;
     hour = hour ? hour : 12;
-    hour = zeroPad(hour);
+    hour = zeroPad(hour.toString());
     var ampm = hour >= 12 ? 'PM' : 'AM';
     var minute = finishDate.getMinutes().toString();
-    minute = zeroPad(minute);
+    minute = zeroPad(minute.toString());
     var day = finishDate.getDate().toString();
-    day = zeroPad(day);
+    day = zeroPad(day.toString());
     var month = finishDate.getMonth().toString();
-    month = zeroPad(month);
+    month = zeroPad(month.toString());
     var year = finishDate.getFullYear().toString();
 
     return hour + ":" + minute + ampm + " " + day + "/" + month + "/" + year;
@@ -110,42 +111,47 @@ Template.poll.events({
       $(".view-votes-section").hide();
     }
   },
-  'click .vote-poll'() {
-    // Get poll
-    var poll = Template.instance().data;
-    var pollChoices = JSON.parse(poll.choices);
+  'click .vote-poll'(event) {
+    // Check that delete button is not disabled
+    if (!$(event.target).hasClass("disabled")) {
+      // Get poll
+      var poll = Template.instance().data;
+      var pollChoices = JSON.parse(poll.choices);
 
-    // Set session data
-    Session.set("currentPoll", poll);
-    Session.set("currentChoices", pollChoices);
+      // Set session data
+      Session.set("currentPoll", poll);
+      Session.set("currentChoices", pollChoices);
 
-    // Hide/show UI sections
-    $(".vote-section").show();
-    $(".view-votes-section").hide();
+      // Hide/show UI sections
+      $(".vote-section").show();
+      $(".view-votes-section").hide();
 
-    // Scroll to vote section
-    var voteSection = $(".vote-section");
-    $('html,body').animate({scrollTop: voteSection.offset().top},'slow');
+      // Scroll to vote section
+      var voteSection = $(".vote-section");
+      $('html,body').animate({scrollTop: voteSection.offset().top},'slow');
+    }
   },
-  'click .view-poll'() {
-    // Get poll
-    var poll = Template.instance().data;
-    var pollChoices = JSON.parse(poll.choices);
+  'click .view-poll'(event) {
+    if (!$(event.target).hasClass("disabled")) {
+      // Get poll
+      var poll = Template.instance().data;
+      var pollChoices = JSON.parse(poll.choices);
 
-    // Set session data
-    Session.set("currentPoll", poll);
-    Session.set("currentChoices", pollChoices);
+      // Set session data
+      Session.set("currentPoll", poll);
+      Session.set("currentChoices", pollChoices);
 
-    // Count votes
-    var countedVotes = countVotes(pollChoices, poll.votes);
-    Session.set("countedVotes", countedVotes);
+      // Count votes
+      var countedVotes = countVotes(pollChoices, poll.votes);
+      Session.set("countedVotes", countedVotes);
 
-    // Hide/show UI sections
-    $(".vote-section").hide();
-    $(".view-votes-section").show();
+      // Hide/show UI sections
+      $(".vote-section").hide();
+      $(".view-votes-section").show();
 
-    // Scroll to view votes section
-    var viewVotesSection = $(".view-votes-section");
-    $('html,body').animate({scrollTop: viewVotesSection.offset().top},'slow');
+      // Scroll to view votes section
+      var viewVotesSection = $(".view-votes-section");
+      $('html,body').animate({scrollTop: viewVotesSection.offset().top},'slow');
+    }
   },
 });

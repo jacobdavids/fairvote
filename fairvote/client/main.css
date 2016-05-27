@@ -346,3 +346,7 @@ li.notification.info {
 .view-votes-section {
 	display: none;
 }
+
+.view-votes-section .section-body h3:first-of-type {
+    margin-top: 0px;
+}
