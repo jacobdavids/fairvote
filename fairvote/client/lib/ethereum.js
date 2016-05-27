@@ -40,10 +40,17 @@ observePolls = function(){
       }
     },
     changed: function(newDocument, oldDocument){
-      if (newDocument.votes.length > 0) {
+      // Check that a vote has been recorded
+      if (newDocument.votes.length > oldDocument.votes.length) {
+
+        // Recount votes for poll
         var choices = JSON.parse(newDocument.choices);
         var countedVotes = countVotes(choices, newDocument.votes);
+        
+        // Update the counted votes session variable
         Session.set("countedVotes", countedVotes);
+
+        // Update current poll session variable
         Session.set("currentPoll", newDocument);
       }
     },

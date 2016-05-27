@@ -118,11 +118,18 @@ Template.body.events({
       maxVotes: maxVotes,
       maxVoters: maxVoters,
       finishDate: finishDate,
+      active: true,
       voters: [],
       voted: [],
       votes: [],
       createdAt: new Date(), // current time
     });
+
+    // Get created poll
+    poll = Polls.findOne(pollID);
+
+    // Set timer for finish date of poll on server
+    Meteor.call('updateFinishDateTimer', poll, function (error, result) {});
  
     // Clear form
     target.title.value = '';

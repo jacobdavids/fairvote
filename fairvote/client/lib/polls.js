@@ -1,5 +1,11 @@
 import { Polls } from '../../imports/api/polls.js';
 
+zeroPad = function(unit){
+  if (unit < 10) {
+    return "0" + unit;
+  }
+}
+
 Template.createpoll.onRendered(function () {
   // Initiate datetime picker
   $('.datetimepicker').datetimepicker({
@@ -27,6 +33,14 @@ Template.poll.helpers({
   maxVotesReached() {
     // Check if number of votes has exceeded maximum votes
     if (this.votes.length >= parseInt(this.maxVotes)) {
+      // If poll still active, update to inactive
+      if (this.active) {
+        Polls.update(this._id, {
+          $set: {
+            active: false,
+          },
+        });
+      }
       return true;
     }
     return false
@@ -35,15 +49,7 @@ Template.poll.helpers({
     return this.voters.length;
   },
   pollIsActive() {
-    if (this.contract) {
-      // Get poll
-      var poll = web3.eth.contract(this.contract.abi).at(this.contract.address);
-
-      // Get if poll is active
-      var pollIsActive = poll.p()[7];
-
-      return pollIsActive;
-    }
+    return this.active;
   },
   'getPollStatus': function(bool) {
     if (bool) {
@@ -59,6 +65,29 @@ Template.poll.helpers({
     } else if (pollType == "ALTR") {
       return "Alternative";
     }
+  },
+  pollFinishDateReached() {
+    if ((this.finishDate - Date.now()) <= 0) {
+      return true;
+    }
+    return false;
+  },
+  getFinishDate() {
+    var finishDate = new Date(this.finishDate);
+    var hour = finishDate.getHours().toString();
+    hour = hour % 12;
+    hour = hour ? hour : 12;
+    hour = zeroPad(hour);
+    var ampm = hour >= 12 ? 'PM' : 'AM';
+    var minute = finishDate.getMinutes().toString();
+    minute = zeroPad(minute);
+    var day = finishDate.getDate().toString();
+    day = zeroPad(day);
+    var month = finishDate.getMonth().toString();
+    month = zeroPad(month);
+    var year = finishDate.getFullYear().toString();
+
+    return hour + ":" + minute + ampm + " " + day + "/" + month + "/" + year;
   },
 });
 

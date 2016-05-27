@@ -76,6 +76,13 @@
           <label class="label label-danger">{{getPollStatus pollIsActive}}</label>
         </div>
         {{/if}}
+        <div class="poll-info-field">
+          {{#if pollFinishDateReached }}
+          <label class="label label-danger">Finish date reached</label>
+          {{else}}
+          <label class="">Closes {{getFinishDate}}</label>
+          {{/if}}
+        </div>
       </div>
       <!--Choices: {{choices}}<br>
       Address: {{contract.address}}<br>-->
