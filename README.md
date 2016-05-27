@@ -19,6 +19,33 @@ Read http://guide.meteor.com/ for more information
 
 ## You will also need to run your ethereum private node locally!
 
+Create the following directories to store your custom genesis block and chain data:
+
+```
+mkdir ~/eth
+mkdir ~/eth/chains
+```
+
+Go to created eth directory and create CustomGenesis.json file with the following content (add in your ethereum account address where specified):
+
+```
+{
+    "nonce": "0x0000000000000042",
+    "timestamp": "0x0",
+    "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "extraData": "0x0",
+    "gasLimit": "0x18181818181",
+    "difficulty": "0x400",
+    "mixhash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "coinbase": "0x3333333333333333333333333333333333333333",
+    "alloc":
+    {
+        "insert ethereum account address here":
+        { "balance": "50000000000000000000" }
+    }
+}
+```
+
 Start geth console by running this in a terminal:
 
 ```
@@ -37,7 +64,7 @@ In the attached console, start miner by running:
 miner.start()
 ```
 
-Unlock your account by running:
+Unlock your account/s by running:
 
 ```
 personal.unlockAccount(eth.accounts[0], "password")
