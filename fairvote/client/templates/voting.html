@@ -56,12 +56,12 @@
             {{/each}}
             </div>
             {{#if pollIsActive }}
-            <h4>This poll is active. Votes are still being collected for this poll.</h4>
+            <h4>Votes are still being collected for this poll. This poll is <label class="label label-primary">Active</label></h4>
             {{else}}
               {{#if winner}}
-              <h4>This poll has ended. The winner was: {{winner}}</h4>
+              <h4>This poll has ended. The winner was: <label class="label label-primary">{{winner}}</label></h4>
               {{else}}
-              <h4>This poll has ended. It was a tie.</h4>
+              <h4>This poll has ended. It was a <label class="label label-danger">Tie</label></h4>
               {{/if}}
             {{/if}}
             {{#if poll.votes}}
@@ -76,7 +76,6 @@
                 {{/if}}
               {{/each}}
             {{/if}}
-
         </div>
     </div>
   </div>

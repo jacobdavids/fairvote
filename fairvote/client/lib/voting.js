@@ -98,8 +98,14 @@ getWinnerMaxVotes = function() {
   var countedVotes = Session.get("countedVotes");
   var maxVotes = 0;
   var winningChoice = false;
+
   if (countedVotes){
+    // Get winner with max votes
     countedVotes.forEach( function (countedVote) {
+      // Check for tie
+      if (countedVote.numVotes == maxVotes) {
+        winningChoice = false;
+      }
       if (countedVote.numVotes > maxVotes) {
         maxVotes = countedVote.numVotes;
         winningChoice = countedVote.choice;

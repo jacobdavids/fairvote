@@ -355,3 +355,10 @@ li.notification.info {
 .view-votes-section .section-body h3:first-of-type {
     margin-top: 0px;
 }
+
+.view-votes-section .section-body h4 label {
+	font-size: 16px;
+	margin-top: -2px;
+    vertical-align: middle;
+    display: inline-block;
+}
