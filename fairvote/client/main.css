@@ -330,6 +330,18 @@ li.notification.info {
 	width: 40px;
 }
 
+.form-fields input[type="radio"],
+.form-fields input[type="checkbox"] {
+	margin-top: -7px;
+    vertical-align: middle;
+}
+
+.form-fields select {
+	height: 27px;
+    vertical-align: middle;
+    margin-bottom: 5px;
+}
+
 /* View votes section */
 .view-votes-section {
 	display: none;

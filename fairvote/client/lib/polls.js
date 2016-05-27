@@ -14,6 +14,11 @@ Template.poll.helpers({
     }
   },
   voted() {
+    // Prior to vote being integrated to blockchain
+    if ($.inArray(Session.get("currentEthAccount").address, this.voted) > -1) {
+      return true;
+    }
+    // When vote has been integrated to blockchain
     if ($.inArray(Session.get("currentEthAccount").address, this.voters) > -1) {
      return true;
     }
@@ -70,6 +75,10 @@ Template.poll.events({
       // Remove poll from database
     	Polls.remove(this._id);
     	console.log("Poll deleted from blockchain");
+
+      // Hide UI sections
+      $(".vote-section").hide();
+      $(".view-votes-section").hide();
     }
   },
   'click .vote-poll'() {

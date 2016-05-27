@@ -1,3 +1,5 @@
+import { Polls } from '../../imports/api/polls.js';
+
 getWinnerAV = function () {
   var currentPoll = Session.get("currentPoll");
   var winner = false;
@@ -179,6 +181,13 @@ Template.vote.events({
 
     // Submit vote for each choice selected by user
     submitVotes(poll, votes);
+
+    // Add sender address to poll to ensure they can not vote again
+    Polls.update(currentPoll._id, {
+      $push: {
+        voted: Session.get("currentEthAccount").address,
+      },
+    });
 
     // Notify user their vote has been received
     Notifications.info('Info', 'Your vote is waiting to be mined.');

@@ -62,7 +62,8 @@ submitVotes = function(poll, votes){
       vote.choice,
       vote.preference, 
       {
-        from: Session.get("currentEthAccount").address, 
+        from: Session.get("currentEthAccount").address,
+        gas: 200000,
       }, 
       function (error,success) {
         if(success) {

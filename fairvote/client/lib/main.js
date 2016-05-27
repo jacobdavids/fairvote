@@ -119,6 +119,7 @@ Template.body.events({
       maxVoters: maxVoters,
       finishDate: finishDate,
       voters: [],
+      voted: [],
       votes: [],
       createdAt: new Date(), // current time
     });
@@ -139,6 +140,10 @@ Template.body.events({
       numChoiceFields -= 1;
     }
     Session.set("choiceFields", numChoiceFields);
+
+    // Hide UI sections
+    $(".vote-section").hide();
+    $(".view-votes-section").hide();
 
     Notifications.info('Info', 'Your poll is waiting to be mined.');
   },
