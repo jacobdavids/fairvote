@@ -300,17 +300,8 @@ Template.viewvotes.helpers({
     return Session.get("currentPoll");
   },
   pollIsActive() {
-    var currentPoll = Session.get("currentPoll");
-    if (currentPoll) {
-      if (currentPoll.contract) {
-        // Get poll
-        var poll = web3.eth.contract(currentPoll.contract.abi).at(currentPoll.contract.address);
-
-        // Get if poll is active
-        var pollIsActive = poll.p()[7];
-
-        return pollIsActive;
-      }
+    if (Session.get("currentPoll")) {
+      return Session.get("currentPoll").active;
     }
   },
   winner() {

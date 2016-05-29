@@ -5,7 +5,7 @@ observePolls = function(){
   Polls.find({}).observe({
     added: function(newDocument) {
       // Check if contract already exists for poll
-      if (!newDocument.contract) {
+      if (!newDocument.contract && newDocument.owner.address == Session.get("currentEthAccount").address) {
         console.log("Initialising contract...");
         var pollContract = web3.eth.contract([{ constant: false, inputs: [], name: "kill", outputs: [], type: "function" }, { constant: true, inputs: [], name: "p", outputs: [{ name: "owner", type: "address" }, { name: "title", type: "string" }, { name: "pollType", type: "string" }, { name: "choices", type: "string" }, { name: "maxVotes", type: "uint256" }, { name: "numVotes", type: "uint256" }, { name: "finishDate", type: "uint256" }, { name: "active", type: "bool" }], type: "function" }, { constant: false, inputs: [{ name: "choice", type: "string" }, { name: "preference", type: "string" }], name: "vote", outputs: [{ name: "", type: "bool" }], type: "function" }, { inputs: [{ name: "_title", type: "string" }, { name: "_pollType", type: "string" }, { name: "_choices", type: "string" }, { name: "_maxVotes", type: "uint256" }, { name: "_finishDate", type: "uint256" }], type: "constructor" }, { anonymous: false, inputs: [{ indexed: false, name: "choice", type: "string" }, { indexed: false, name: "preference", type: "string" }, { indexed: false, name: "sender", type: "address" }], name: "Vote", type: "event" }]);
         var poll = pollContract.new(
@@ -26,11 +26,15 @@ observePolls = function(){
               } else { 
                 console.log("Contract mined! Address: " + contract.address); console.log(contract);
 
+                // Get current block and store in poll collection
+                currentBlock = web3.eth.getTransaction(contract.transactionHash).blockNumber;
+
                 // Contract now exists on the block chain, update collection
                 Polls.update(newDocument._id, {
                     $set: { 
                       contract: contract,
                       account: Session.get("currentEthAccount"),
+                      block: currentBlock,
                     },
                   });
                 Notifications.success('Success', 'Your poll is now live on the blockchain.');
@@ -92,8 +96,9 @@ getVoteEvents = function(){
 	var poll = web3.eth.contract(currentPoll.contract.abi).at(address);
 
 	// Count votes for the poll now
- 	var startBlock = web3.eth.getTransaction(currentPoll.contract.transactionHash).blockNumber;
-	var filter = poll.Vote(
+ 	var startBlock = currentPoll.block;
+
+  var filter = poll.Vote(
 		{}, 
 		{
 			fromBlock: startBlock, 

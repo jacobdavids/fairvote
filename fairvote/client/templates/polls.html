@@ -97,7 +97,13 @@
               <label class="">You have voted on this poll</label>
             </div>
           {{else}}
-            <button class="btn fv-btn vote-poll">Vote</button>
+            {{#if pollIsActive }}
+              <button class="btn fv-btn vote-poll">Vote</button>
+            {{else}}
+              <div class="poll-info-field">
+                  <label class="">This poll has ended</label>
+                </div>
+            {{/if}}
           {{/if}}
           <button class="btn fv-btn view-poll">View</button>
           {{#if canDeletePoll account}}

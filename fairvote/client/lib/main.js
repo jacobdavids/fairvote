@@ -173,6 +173,7 @@ Template.body.events({
       maxVoters: maxVoters,
       finishDate: finishDate,
       active: true,
+      owner: Session.get("currentEthAccount"),
       voters: [],
       voted: [],
       votes: [],

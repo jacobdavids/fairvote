@@ -50,7 +50,11 @@ Template.poll.helpers({
     return this.voters.length;
   },
   pollIsActive() {
-    return this.active;
+    // Update poll stored in session
+    Session.set("currentPoll", this);
+    if (this) {
+      return this.active;
+    }
   },
   'getPollStatus': function(bool) {
     if (bool) {
@@ -76,10 +80,10 @@ Template.poll.helpers({
   getFinishDate() {
     var finishDate = new Date(this.finishDate);
     var hour = finishDate.getHours().toString();
+    var ampm = hour >= 12 ? 'PM' : 'AM';
     hour = hour % 12;
     hour = hour ? hour : 12;
     hour = zeroPad(hour.toString());
-    var ampm = hour >= 12 ? 'PM' : 'AM';
     var minute = finishDate.getMinutes().toString();
     minute = zeroPad(minute.toString());
     var day = finishDate.getDate().toString();
