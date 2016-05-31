@@ -88,7 +88,7 @@ Template.poll.helpers({
     minute = zeroPad(minute.toString());
     var day = finishDate.getDate().toString();
     day = zeroPad(day.toString());
-    var month = finishDate.getMonth().toString();
+    var month = (finishDate.getMonth() + 1).toString();
     month = zeroPad(month.toString());
     var year = finishDate.getFullYear().toString();
 
