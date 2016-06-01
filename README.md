@@ -17,7 +17,7 @@ sudo apt-get install ethereum
 curl https://install.meteor.com/ | sh
 ```
 
-cd into project directory and then run:
+`cd` into project directory and then run:
 
 ```
 meteor
