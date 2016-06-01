@@ -1,6 +1,17 @@
 ## How to run
 
-Install Meteor:
+### Install Geth:
+
+(On Debian-based systems)
+
+```
+sudo apt-add-repository -y ppa:ethereum/ethereum
+sudo apt-get update
+sudo apt-get install ethereum
+```
+
+
+### Install and run Meteor:
 
 ```
 curl https://install.meteor.com/ | sh
@@ -9,24 +20,26 @@ curl https://install.meteor.com/ | sh
 cd into project directory and then run:
 
 ```
-meteor npm install
 meteor
 ```
 
-Meteor server will start running on: http://localhost:3000/
+Meteor server will start running on: [http://localhost:3000](http://localhost:3000)
 
 Read http://guide.meteor.com/ for more information
 
-## You will also need to run your ethereum private node locally!
+### Create Ethereum account
+
+TODO
+
+## You will also need to run your Ethereum private node locally!
 
 Create the following directories to store your custom genesis block and chain data:
 
 ```
-mkdir ~/eth
-mkdir ~/eth/chains
+mkdir -p ~/eth/chains
 ```
 
-Go to created eth directory and create CustomGenesis.json file with the following content (add in your ethereum account address where specified):
+Go to created eth directory and create CustomGenesis.json file with the following content (add in your Ethereum account address where specified):
 
 ```
 {
