@@ -33,7 +33,7 @@ Template.poll.helpers({
   },
   maxVotesReached() {
     // Check if number of votes has exceeded maximum votes
-    if (this.votes.length >= parseInt(this.maxVotes)) {
+    if (this.rawBallots.length >= parseInt(this.maxVoters)) {
       // If poll still active, update to inactive
       if (this.active) {
         Polls.update(this._id, {
@@ -124,7 +124,6 @@ Template.poll.events({
 
       // Set session data
       Session.set("currentPoll", poll);
-      Session.set("currentChoices", pollChoices);
 
       // Hide/show UI sections
       $(".vote-section").show();
@@ -143,10 +142,9 @@ Template.poll.events({
 
       // Set session data
       Session.set("currentPoll", poll);
-      Session.set("currentChoices", pollChoices);
 
       // Count votes
-      var countedVotes = countVotes(pollChoices, poll.votes);
+      var countedVotes = countVotes(pollChoices, poll.rawBallots);
       Session.set("countedVotes", countedVotes);
 
       // Hide/show UI sections

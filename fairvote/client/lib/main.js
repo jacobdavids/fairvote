@@ -11,18 +11,17 @@ Meteor.startup(function () {
     });
 });
 
-countVotes = function(choices, votes) {
+countVotes = function(choices, rawBallots) {
   var countedVotes = [];
-  // Check if choices exist
-  if (choices) {
-    // Get current poll stored in session
-    var currentPoll = Session.get("currentPoll");
-    
-    // Loop through each choice for poll
-    choices.forEach( function (choice) {
-      // Count votes for each choice
-      var numVotes = 0;
-      votes.forEach( function (vote) {
+  // Get current poll stored in session
+  var currentPoll = Session.get("currentPoll");
+
+  // Loop through each choice for poll
+  choices.forEach( function (choice) {
+    var numVotes = 0;
+    rawBallots.forEach( function (rawBallot) {
+      var ballot = JSON.parse(rawBallot.votes);
+      ballot.forEach( function (vote) {
         // Counting style is dependant on poll type
         if ((currentPoll.pollType == "ALTR") && (choice == vote.choice) &&
             (vote.preference == "1")) {
@@ -32,58 +31,13 @@ countVotes = function(choices, votes) {
           // For other polls, count all valid choices as votes
            numVotes += 1;
          }
-       });
-      // Add count of votes for each choice to array
-      countedVotes.push({choice: choice, numVotes: numVotes});
+      });
     });
-    return countedVotes;
-  }
-}
+    // Add count of votes for each choice to array
+    countedVotes.push({choice: choice, numVotes: numVotes});
+  });
 
-validatePollForm = function(target) {
-  // Check title is valid
-  var title = target.title.value;
-  if (title == "") {
-    Notifications.error('Error', 'Poll title cannot be empty. Please enter a poll title.');
-    return false;
-  }
-
-  // Check poll type is valid
-  var pollType = target.pollType.value;
-  if (pollType == "") {
-    Notifications.error('Error', 'Poll type cannot be empty. Please select a poll type.');
-    return false;
-  }
-
-  // Check if choice fields are valid
-  var numChoiceFields = Session.get("choiceFields");
-  var choiceFields = target.children.item(2).children;
-  for (var i=0; i < choiceFields.length; i+=1) {
-    if (choiceFields[i].value == "") {
-      Notifications.error('Error', 'Choices cannot be empty. Please enter text for each choice.');
-      return false;
-    }
-  }
-
-  // Check maximum voters is valid
-  var maxVoters = target.maxVoters.value;
-  if (maxVoters == "") {
-    Notifications.error('Error', 'Maximum voters cannot be empty. Please enter a value for maximum voters.');
-    return false;
-  }
-  if (maxVoters == "0") {
-    Notifications.error('Error', 'Maximum voters cannot be zero. Please enter a positive value for maximum voters.');
-    return false;
-  }
-
-  // Check finish date is valid
-  var finishDate = target.finishDate.value;
-  if (finishDate == "") {
-    Notifications.error('Error', 'Finish date cannot be empty. Please select a finish date.');
-    return false;
-  }
-
-  return true;
+  return countedVotes;
 }
 
 Template.body.onCreated(function bodyOnCreated() {
@@ -143,7 +97,6 @@ Template.body.events({
     const title = target.title.value;
     const pollType = target.pollType.value;
     const maxVoters = target.maxVoters.value;
-    var maxVotes = 0;
     const finishDate = Date.parse(target.finishDate.value);
 
     // Get number of choice fields from session variable
@@ -156,25 +109,17 @@ Template.body.events({
     // Convert choices array to string for storage in contract
     choices = JSON.stringify(choices);
 
-    // Calculate max votes for poll
-    if (pollType == "FPTP") {
-      maxVotes = maxVoters;
-    } else if ((pollType == "APRV") || (pollType == "ALTR")) {
-      maxVotes = numChoiceFields*parseInt(maxVoters);
-      maxVotes = maxVotes.toString();
-    }
-
     // Insert a poll into the collection
     var pollID = Polls.insert({
       title: title,
       pollType: pollType,
       choices: choices,
-      maxVotes: maxVotes,
       maxVoters: maxVoters,
       finishDate: finishDate,
       active: true,
       owner: Session.get("currentEthAccount"),
       voters: [],
+      rawBallots: [],
       voted: [],
       votes: [],
       createdAt: new Date(), // current time

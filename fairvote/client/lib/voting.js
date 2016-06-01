@@ -6,7 +6,16 @@ getWinnerAV = function () {
   var tie = false;
   var winningChoice;
   // var FAKEVOTEDATA = [];
-  var votes = currentPoll.votes;
+
+  var votes = [];
+  currentPoll.rawBallots.forEach( function (rawBallot) {
+      var ballot = JSON.parse(rawBallot.votes);
+      var sender = rawBallot.sender;
+      ballot.forEach( function (vote) {
+        vote['sender'] = sender;
+        votes.push(vote);
+      });
+  });
 
   // Repeat alternative vote counting method until winner is found
   while(!winner && !tie) {
@@ -18,9 +27,9 @@ getWinnerAV = function () {
       }
     });
 
-    var choices = Session.get("currentChoices");
+    var choices = JSON.parse(currentPoll.choices);
     // var choices = ["A", "B", "C", "D"];
-    var countedVotes = countVotes(choices, votes);
+    var countedVotes = countVotes(choices, currentPoll.rawBallots);
 
     // Find choice that has maximum first preference votes
     var maxFirstVotes = 0;
@@ -86,11 +95,9 @@ getWinnerAV = function () {
   // Check that there was not a tie
   if (!tie) {
     // Return winning choice
-    console.log("WINNER IS: " + winningChoice);
     return winningChoice;
   }
   // Return false if there is a tie
-  console.log("TIE! THERE IS NO WINNER");
   return false;
 }
 
@@ -115,70 +122,19 @@ getWinnerMaxVotes = function() {
   return winningChoice;
 }
 
-validateFPTPPoll = function(target) {
-  var choice = target.choice.value;
-
-  // If no choice selected, display error to user
-  if (choice == "") {
-      Notifications.error('Error', 'You need to select at least one choice. Please select a choice.');
-      return false;
-  }
-
-  return true;
-}
-
-validateAPRVPoll = function(target) {
-  var choiceSelected = false;
-
-  // Check if any choices have been selected by the user
-  for (var i=0; i < target.choice.length; i++) {
-    if (target.choice[i].checked) {
-      choiceSelected = true;
-    }
-  }
-
-  // If no choices have been selected, display error to user
-  if (!choiceSelected) {
-    Notifications.error('Error', 'You need to select at least one choice. Please select a choice.');
-    return false;
-  }
-
-  return true;
-}
-
-validateALTRPoll = function(target) {
-  // Get list of preference elements
-  var preferencesElements = target.preference;
-
-  // For each preference element, push the selected value to an array
-  var preferences = [];
-  for (var i = 0; i < preferencesElements.length; i++) {
-    preferences.push(preferencesElements[i].value);
-  }
-
-  // Sort the array of preferences to get them in order 
-  var sortedPreferences = preferences.slice().sort();
-
-  // Iterate through sorted array of preferences
-  for (var i = 0; i < sortedPreferences.length; i++) {
-    // If two consecutive preferences are equal, display error to user
-    if (sortedPreferences[i + 1] == sortedPreferences[i]) {
-        Notifications.error('Error', 'You cannot select the same preference more than once. Please remove any duplicates.');
-        return false;
-    }
-  }
-
-  return true;
-}
-
 Template.vote.helpers({
   choices() {
-  	return Session.get("currentChoices");
+    var currentPoll = Session.get("currentPoll");
+    if (!currentPoll) {
+      return;
+    }
+  	return JSON.parse(currentPoll.choices);
   },
   preferenceNumbers() {
-    var numCurrentChoices = Session.get("currentChoices").length;
+    var currentPoll = Session.get("currentPoll");
+    var numChoices = JSON.parse(currentPoll.choices).length;
     var preferenceNumbers = [];
-    for (var i = 1; i < (numCurrentChoices+1); i++) {
+    for (var i = 1; i < (numChoices+1); i++) {
       preferenceNumbers.push(i);
     }
     return preferenceNumbers;
@@ -228,6 +184,7 @@ Template.vote.events({
     } else if (currentPoll.pollType == "APRV") {
       // Approval poll
 
+      // Check if form is valid
       var valid = validateAPRVPoll(target);
       if (!valid) {
         return;
@@ -278,14 +235,14 @@ Template.vote.events({
    	getVoteEvents();
 
     // Count votes
-    var choices = Session.get("currentChoices");
-    var votes = Session.get("currentPoll").votes;
-    var countedVotes = countVotes(choices, votes);
+    var currentPoll = Session.get("currentPoll");
+    var choices = JSON.parse(currentPoll.choices);
+    var countedVotes = countVotes(choices, currentPoll.rawBallots);
+
     // Store counted votes in session data
     Session.set("countedVotes", countedVotes);
 
-    // Set session data
-    Session.set("currentChoices", JSON.parse(currentPoll.choices));
+    // Hide/show UI sections
     $(".vote-section").hide();
     $(".view-votes-section").show();
   },
