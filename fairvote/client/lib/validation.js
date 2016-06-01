@@ -46,8 +46,6 @@ validatePollForm = function(target) {
     return false;
   }
 
-
-
   return true;
 }
 
