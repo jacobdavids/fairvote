@@ -1,5 +1,5 @@
 Template.viewvotes.helpers({
-  votes() {
+  countedVotes() {
     // Get counted votes array from session data
     return Session.get("countedVotes");
   },
@@ -27,4 +27,21 @@ Template.viewvotes.helpers({
 
     return winner;
   },
+  votes() {
+    var currentPoll = Session.get("currentPoll");
+
+    // Loop through raw ballots and create an array of vote objects
+    // Each vote object consists of: choice, preference & sender
+    var votes = [];
+    currentPoll.rawBallots.forEach( function (rawBallot) {
+        var ballot = JSON.parse(rawBallot.votes);
+        var sender = rawBallot.sender;
+        ballot.forEach( function (vote) {
+          vote['sender'] = sender;
+          votes.push(vote);
+        });
+    });
+
+    return votes;
+  }
 });

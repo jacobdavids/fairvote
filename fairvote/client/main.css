@@ -133,6 +133,12 @@ li.notification.info {
 	background: #ffffff;
 }
 
+@media (max-width: 1024px) {
+	.section {
+		width: 90%;
+	}
+}
+
 .section-title {
 	border-bottom: 1px solid #e5e5e5;
 }
@@ -243,7 +249,7 @@ li.notification.info {
 	padding: 0;
 }
 
-.all-polls .col-md-4 {
+.all-polls .col-xs-4 {
 	padding: 10px;
 }
 

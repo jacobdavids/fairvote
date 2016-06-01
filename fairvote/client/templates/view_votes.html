@@ -9,7 +9,7 @@
             <h4>Please note that votes recently made will be displayed as soon as the next block has been generated.</h4>
             <h3>Vote count</h3>
             <div class="form-fields">
-            {{#each votes}}
+            {{#each countedVotes}}
               <span>{{choice}}:&nbsp;</span><span>{{numVotes}}</span><br>
             {{/each}}
             </div>
@@ -22,9 +22,9 @@
               <h4>This poll has ended. It was a <label class="label label-danger">Tie</label></h4>
               {{/if}}
             {{/if}}
-            {{#if poll.votes}}
+            {{#if votes}}
               <h3>Vote ledger</h3>
-              {{#each poll.votes}}
+              {{#each votes}}
                 {{#if choice}}
                   {{#if preference}}
                   <span>{{sender}} voted for {{choice}} with preference {{preference}}</span><br>
