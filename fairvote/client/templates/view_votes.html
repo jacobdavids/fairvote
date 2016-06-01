@@ -1,0 +1,40 @@
+<template name="viewvotes">
+  <div class="section view-votes-section">
+    <div class="">
+        <div class="section-title">
+          <h1>View Votes</h1>
+        </div>
+        <div class="section-body">
+            <h3>Displaying votes for "{{poll.title}}"</h3>
+            <h4>Please note that votes recently made will be displayed as soon as the next block has been generated.</h4>
+            <h3>Vote count</h3>
+            <div class="form-fields">
+            {{#each votes}}
+              <span>{{choice}}:&nbsp;</span><span>{{numVotes}}</span><br>
+            {{/each}}
+            </div>
+            {{#if pollIsActive }}
+            <h4>Votes are still being collected for this poll. This poll is <label class="label label-primary">Active</label></h4>
+            {{else}}
+              {{#if winner}}
+              <h4>This poll has ended. The winner was: <label class="label label-primary">{{winner}}</label></h4>
+              {{else}}
+              <h4>This poll has ended. It was a <label class="label label-danger">Tie</label></h4>
+              {{/if}}
+            {{/if}}
+            {{#if poll.votes}}
+              <h3>Vote ledger</h3>
+              {{#each poll.votes}}
+                {{#if choice}}
+                  {{#if preference}}
+                  <span>{{sender}} voted for {{choice}} with preference {{preference}}</span><br>
+                  {{else}}
+                  <span>{{sender}} voted for {{choice}}</span><br>
+                  {{/if}}
+                {{/if}}
+              {{/each}}
+            {{/if}}
+        </div>
+    </div>
+  </div>
+</template>

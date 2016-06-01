@@ -7,13 +7,6 @@ zeroPad = function(unit){
   return unit;
 }
 
-Template.createpoll.onRendered(function () {
-  // Initiate datetime picker
-  $('.datetimepicker').datetimepicker({
-    allowInputToggle: true,
-  });
-});
-
 Template.poll.helpers({
   'canDeletePoll': function(account) {
     if (account) {

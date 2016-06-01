@@ -1,0 +1,32 @@
+<template name="createpoll">
+  <div class="section create-poll-section">
+    <div class="">
+        <div class="section-title">
+            <h1>Create a Poll</h1>
+        </div>
+        <div class="section-body">
+            <form class="new-poll">
+              <input type="text" class="form-control" name="title" placeholder="Poll title" />
+              <select name="pollType" class="form-control select-poll-field">
+                <option value="" disabled selected>Select poll type</option>
+                <option value="FPTP">First past the post</option>
+                <option value="APRV">Approval</option>
+                <option value="ALTR">Alternative</option>
+              </select>
+              <div class="poll-choices">
+              <input type="text" class="form-control" name="choice1" placeholder="Poll choice 1" />
+              <input type="text" class="form-control" name="choice2" placeholder="Poll choice 2" />
+              </div>
+              <button class="btn fv-btn add-choice"><i class="fa fa-plus"></i></button>
+              <button class="btn fv-btn fv-btn-delete remove-choice"><i class="fa fa-minus"></i></button>
+              <input type="text" class="form-control" name="maxVoters" placeholder="Maximum voters" />
+              <div class="input-group datetimepicker">
+                <input type="text" class="form-control" name="finishDate" placeholder="Select finish date" />
+                <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+              </div>
+              <button class="btn fv-btn">Create Poll</button>
+            </form>
+        </div>
+    </div>
+  </div>
+</template>
