@@ -28,12 +28,16 @@ countVotes = function(choices, rawBallots) {
 }
 
 getWinnerAV = function () {
+  // Get current poll from session
   var currentPoll = Session.get("currentPoll");
+
+  // Initialise variables
   var winner = false;
   var tie = false;
   var winningChoice;
-  // var FAKEVOTEDATA = [];
 
+  // Loop through raw ballots and create an array of vote objects
+  // Each vote object consists of: choice, preference & sender
   var votes = [];
   currentPoll.rawBallots.forEach( function (rawBallot) {
       var ballot = JSON.parse(rawBallot.votes);
@@ -55,7 +59,6 @@ getWinnerAV = function () {
     });
 
     var choices = JSON.parse(currentPoll.choices);
-    // var choices = ["A", "B", "C", "D"];
     var countedVotes = countVotes(choices, currentPoll.rawBallots);
 
     // Find choice that has maximum first preference votes
@@ -121,10 +124,9 @@ getWinnerAV = function () {
 
   // Check that there was not a tie
   if (!tie) {
-    // Return winning choice
     return winningChoice;
   }
-  // Return false if there is a tie
+  // Return false if there was a tie
   return false;
 }
 

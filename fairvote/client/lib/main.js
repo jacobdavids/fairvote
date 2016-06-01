@@ -12,9 +12,6 @@ Meteor.startup(function () {
 });
 
 Template.body.onCreated(function bodyOnCreated() {
-  // init reactive variables
-  this.polls = new ReactiveVar([]);
-
   // Set session variable for number of choice fields to display
   Session.set("choiceFields", 2);
 
@@ -24,6 +21,7 @@ Template.body.onCreated(function bodyOnCreated() {
 
   // Set main account (Etherbase) as current account
   var currentEthAccount = EthAccounts.findOne({name: "Main account (Etherbase)"});
+
   // Check if ethereum account exists
   if (currentEthAccount) {
     // Set current account in session
@@ -31,13 +29,11 @@ Template.body.onCreated(function bodyOnCreated() {
     $(".select-eth-account").value = currentEthAccount.address;
   }
 
+  // Run function to observe Polls collection
   observePolls();
 });
 
 Template.body.helpers({
-  polls() {
-    return Polls.find({});
-  },
   accounts() {
     return EthAccounts.find({});
   },

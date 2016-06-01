@@ -7,6 +7,12 @@ zeroPad = function(unit){
   return unit;
 }
 
+Template.existingpolls.helpers({
+  polls() {
+    return Polls.find({});
+  },
+});
+
 Template.poll.helpers({
   'canDeletePoll': function(account) {
     if (account) {

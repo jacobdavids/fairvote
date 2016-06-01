@@ -45,6 +45,13 @@ validatePollForm = function(target) {
     Notifications.error('Error', 'Finish date cannot be in the past. Please select a finish date in the future.');
     return false;
   }
+  // Finish dates over 3 weeks into the future are not permitted currently (Meteor.setTimeout function cannot handle this)
+  // There are 86400 seconds in a day
+  var msInThreeWeeks = 21*86400*1000
+  if ((finishDate-Date.now()) >= msInThreeWeeks) {
+    Notifications.error('Error', 'Polls cannot run for longer than three weeks. Please select a finish date that is less than three weeks into the future.');
+    return false;
+  }
 
   return true;
 }
