@@ -49,7 +49,7 @@ contract poll is mortal {
   /* Declare state variable that records if sender address has submitted ballot. */
   mapping(address => bool) public hasVoted;
 
-  /* Function to handle the process of voting, when maxVotes reached poll is deactivated */
+  /* Function to handle the process of voting, when maxBallots reached poll is deactivated */
   function vote(string votes) returns (bool) {
     if (p.active != true) {
       return false;

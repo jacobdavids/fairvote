@@ -40,6 +40,13 @@ validatePollForm = function(target) {
     Notifications.error('Error', 'Finish date cannot be empty. Please select a finish date.');
     return false;
   }
+  finishDate = new Date(finishDate);
+  if (finishDate <= Date.now()) {
+    Notifications.error('Error', 'Finish date cannot be in the past. Please select a finish date in the future.');
+    return false;
+  }
+
+
 
   return true;
 }

@@ -31,8 +31,8 @@ Template.poll.helpers({
     }
     return false;
   },
-  maxVotesReached() {
-    // Check if number of votes has exceeded maximum votes
+  maxVotersReached() {
+    // Check if number of ballots has exceeded maximum voters
     if (this.rawBallots.length >= parseInt(this.maxVoters)) {
       // If poll still active, update to inactive
       if (this.active) {

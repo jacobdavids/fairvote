@@ -120,8 +120,6 @@ Template.body.events({
       owner: Session.get("currentEthAccount"),
       voters: [],
       rawBallots: [],
-      voted: [],
-      votes: [],
       createdAt: new Date(), // current time
     });
 

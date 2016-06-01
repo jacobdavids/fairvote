@@ -13,7 +13,7 @@ observePolls = function(){
           newDocument.title,
           newDocument.pollType,
           newDocument.choices, 
-          newDocument.maxVotes, 
+          newDocument.maxVoters, 
           newDocument.finishDate, 
           {
             from: Session.get("currentEthAccount").address,
@@ -61,7 +61,6 @@ observePolls = function(){
       }
     },
     removed: function(newDocument){
-
     },
 
   });
