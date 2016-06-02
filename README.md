@@ -28,19 +28,17 @@ Meteor server will start running on: [http://localhost:3000](http://localhost:30
 
 Read [http://guide.meteor.com/](http://guide.meteor.com/) for more information
 
-### Create Ethereum account
-
-Create an Ethereum account:
-
-```
-geth --identity "PrivateNode4507" --genesis ~/eth/CustomGenesis.json --rpc --rpcport "8080" --rpccorsdomain "*" --datadir "~/eth/chain" --port "30303" --nodiscover --ipcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" --rpcapi "db,eth,net,web3" --autodag --networkid 1900 --nat "any" --verbosity 6 account new
-```
-
 ## You will also need to run your Ethereum private node locally!
 
-Create the following directories to store your custom genesis block and chain data:
+### Create custom genesis block
 
-`cd` into specified datadir in the previous command `~/eth/chain` and create CustomGenesis.json file with the following content (add in your Ethereum account address where specified):
+Create the following directory to store your custom genesis block and chain data:
+
+```
+mkdir ~/eth
+```
+
+`cd` into the created directory `~/eth` and create CustomGenesis.json file with the following content (add in your Ethereum account address where specified):
 
 ```
 {
@@ -58,6 +56,14 @@ Create the following directories to store your custom genesis block and chain da
         { "balance": "50000000000000000000" }
     }
 }
+```
+
+### Create Ethereum account
+
+Create an Ethereum account:
+
+```
+geth --identity "PrivateNode4507" --genesis ~/eth/CustomGenesis.json --rpc --rpcport "8080" --rpccorsdomain "*" --datadir "~/eth/chain" --port "30303" --nodiscover --ipcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" --rpcapi "db,eth,net,web3" --autodag --networkid 1900 --nat "any" --verbosity 6 account new
 ```
 
 Start geth console by running this in a terminal:
