@@ -10,6 +10,11 @@ sudo apt-get update
 sudo apt-get install ethereum
 ```
 
+(On OS X)
+```
+brew tap ethereum/ethereum
+brew install ethereum
+```
 
 ### Install and run Meteor:
 
