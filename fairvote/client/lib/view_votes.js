@@ -1,25 +1,25 @@
 Template.viewvotes.helpers({
   countedVotes() {
-    // Get counted votes array from session data
     return Session.get("countedVotes");
   },
   poll() {
     return Session.get("currentPoll");
   },
   pollIsActive() {
-    if (Session.get("currentPoll")) {
-      return Session.get("currentPoll").active;
-    }
+    var currentPoll = Session.get("currentPoll");
+    if (!currentPoll) return;
+
+    return currentPoll.active;
   },
   winner() {
     var currentPoll = Session.get("currentPoll");
     if (!currentPoll) return;
 
-    // Get winner for poll
+    // Calculate winner for poll
     var winner;
     if (currentPoll.pollType == "ALTR") {
       // Calculate winner using alternative vote methodology
-      winner = getWinnerAV();
+      winner = getWinnerALTR();
     } else {
       // Calculate winner from number of max votes
       winner = getWinnerMaxVotes();
@@ -29,6 +29,7 @@ Template.viewvotes.helpers({
   },
   votes() {
     var currentPoll = Session.get("currentPoll");
+    if (!currentPoll) return;
 
     // Loop through raw ballots and create an array of vote objects
     // Each vote object consists of: choice, preference & sender

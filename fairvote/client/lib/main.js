@@ -6,9 +6,10 @@ import { Polls } from '../../imports/api/polls.js';
 import '../templates/main.html';
 
 Meteor.startup(function () {
-    _.extend(Notifications.defaultOptions, {
-        timeout: 5000
-    });
+  // Set 5 second timeout for notifications
+  _.extend(Notifications.defaultOptions, {
+      timeout: 5000
+  });
 });
 
 Template.body.onCreated(function bodyOnCreated() {
@@ -46,6 +47,7 @@ Template.body.helpers({
 });
 
 Template.body.events({
+  // Called when user changes the Ethereum account via dropdown
   'change .select-eth-account'(event) {
     var selectedEthAccount = EthAccounts.findOne({address: event.target.value})
     Session.set("currentEthAccount", selectedEthAccount);

@@ -1,6 +1,7 @@
 import { Polls } from '../../imports/api/polls.js';
 
 zeroPad = function(unit){
+  // For values under 10, pad with a zero
   if (unit < 10) {
     return "0" + unit;
   }
@@ -14,9 +15,10 @@ Template.existingpolls.helpers({
 });
 
 Template.poll.helpers({
-  'canDeletePoll': function(account) {
-    if (account) {
-      return Session.get("currentEthAccount").address == account.address
+  'canDeletePoll': function(owner) {
+    if (owner) {
+      // Polls can only be deleted by their owner (creator)
+      return Session.get("currentEthAccount").address == owner.address
     }
   },
   voted() {
@@ -46,11 +48,12 @@ Template.poll.helpers({
     return false
   },
   numBallotsReceived() {
-    return this.voters.length;
+    return this.rawBallots.length;
   },
   pollIsActive() {
     // Update poll stored in session
     Session.set("currentPoll", this);
+
     if (this) {
       return this.active;
     }
@@ -77,7 +80,10 @@ Template.poll.helpers({
     return false;
   },
   getFinishDate() {
+    // Convert finish date string to date object
     var finishDate = new Date(this.finishDate);
+
+    // Get date components
     var hour = finishDate.getHours().toString();
     var ampm = hour >= 12 ? 'PM' : 'AM';
     hour = hour % 12;
@@ -91,6 +97,7 @@ Template.poll.helpers({
     month = zeroPad(month.toString());
     var year = finishDate.getFullYear().toString();
 
+    // Return date in readable format
     return hour + ":" + minute + ampm + " " + day + "/" + month + "/" + year;
   },
 });
@@ -119,7 +126,6 @@ Template.poll.events({
     if (!$(event.target).hasClass("disabled")) {
       // Get poll
       var poll = Template.instance().data;
-      var pollChoices = JSON.parse(poll.choices);
 
       // Set session data
       Session.set("currentPoll", poll);
@@ -137,13 +143,12 @@ Template.poll.events({
     if (!$(event.target).hasClass("disabled")) {
       // Get poll
       var poll = Template.instance().data;
-      var pollChoices = JSON.parse(poll.choices);
 
       // Set session data
       Session.set("currentPoll", poll);
 
       // Count votes
-      var countedVotes = countVotes(pollChoices, poll.rawBallots);
+      var countedVotes = countVotes(poll.choices, poll.rawBallots);
       Session.set("countedVotes", countedVotes);
 
       // Hide/show UI sections

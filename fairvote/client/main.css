@@ -1,7 +1,4 @@
-/* CSS declarations go here */
-.poll-table > tr > th {
-	text-align: left;
-}
+/* Wrappers */
 
 body {
 	background: #f9f9f9;
@@ -11,6 +8,8 @@ body {
 .container-fluid {
 	padding: 0px;
 }
+
+/* Buttons */
 
 .fv-btn {
 	width: 100%;
@@ -38,6 +37,7 @@ body {
 }
 
 /* Navbar */
+
 .navbar {
 	position: fixed;
 	width: 100%;
@@ -98,6 +98,7 @@ body {
 }
 
 /* Notifications */
+
 ul.notifications {
 	width: 320px;
 	position: fixed;
@@ -124,6 +125,7 @@ li.notification.info {
 }
 
 /* Sections */
+
 .section {
 	margin: 20px auto;
 	width: 1000px;
@@ -159,6 +161,7 @@ li.notification.info {
 }
 
 /* Create poll section */
+
 .create-poll-section,
 .select-eth-account-section {
 	margin-top: 74px;
@@ -243,6 +246,7 @@ li.notification.info {
 }
 
 /* Existing polls section */
+
 .all-polls {
 	list-style: none;
 	margin: 0;
@@ -310,6 +314,7 @@ li.notification.info {
 }
 
 /* Vote section */
+
 .vote-section {
 	display: none;
 }
@@ -354,6 +359,7 @@ li.notification.info {
 }
 
 /* View votes section */
+
 .view-votes-section {
 	display: none;
 }

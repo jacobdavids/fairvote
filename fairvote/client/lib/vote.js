@@ -3,18 +3,20 @@ import { Polls } from '../../imports/api/polls.js';
 Template.vote.helpers({
   choices() {
     var currentPoll = Session.get("currentPoll");
-    if (!currentPoll) {
-      return;
-    }
-  	return JSON.parse(currentPoll.choices);
+    if (!currentPoll) return;
+
+  	return currentPoll.choices;
   },
   preferenceNumbers() {
     var currentPoll = Session.get("currentPoll");
-    var numChoices = JSON.parse(currentPoll.choices).length;
+    var numChoices = currentPoll.choices.length;
+
+    // Make array of available preference numbers for alternative vote ballots
     var preferenceNumbers = [];
     for (var i = 1; i < (numChoices+1); i++) {
       preferenceNumbers.push(i);
     }
+
     return preferenceNumbers;
   },
   pollTypeIsFPTP() {
@@ -54,9 +56,7 @@ Template.vote.events({
 
       // Check if form is valid
       var valid = validateFPTPPoll(target);
-      if (!valid) {
-        return;
-      }
+      if (!valid) return;
 
       votes.push({choice: target.choice.value, preference: ''});
     } else if (currentPoll.pollType == "APRV") {
@@ -64,9 +64,7 @@ Template.vote.events({
 
       // Check if form is valid
       var valid = validateAPRVPoll(target);
-      if (!valid) {
-        return;
-      }
+      if (!valid) return;
 
       for (var i=0; i < target.choice.length; i++) {
         if (target.choice[i].checked) {
@@ -81,9 +79,7 @@ Template.vote.events({
 
       // Check if form is valid
       var valid = validateALTRPoll(target);
-      if (!valid) {
-        return;
-      }
+      if (!valid) return;
 
       // Get preferences from select inputs, use same index to get choices form hidden input fields
       for (var i=0; i < target.preference.length; i++) {
@@ -114,8 +110,7 @@ Template.vote.events({
 
     // Count votes
     var currentPoll = Session.get("currentPoll");
-    var choices = JSON.parse(currentPoll.choices);
-    var countedVotes = countVotes(choices, currentPoll.rawBallots);
+    var countedVotes = countVotes(currentPoll.choices, currentPoll.rawBallots);
 
     // Store counted votes in session data
     Session.set("countedVotes", countedVotes);

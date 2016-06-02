@@ -8,7 +8,7 @@ Template.createpoll.onRendered(function () {
 });
 
 Template.createpoll.events({
-  // Create new poll
+  // Called when user attemps to create new poll
   'submit .new-poll'(event) {
     // Prevent default browser form submit
     event.preventDefault();
@@ -28,15 +28,12 @@ Template.createpoll.events({
     const maxVoters = target.maxVoters.value;
     const finishDate = Date.parse(target.finishDate.value);
 
-    // Get number of choice fields from session variable
-    var numChoiceFields = Session.get("choiceFields");
+    // Make array of choices entered by the user
     var choiceFields = target.children.item(2).children;
     var choices = [];
     for (var i=0; i < choiceFields.length; i+=1) {
       choices.push(choiceFields[i].value);
     }
-    // Convert choices array to string for storage in contract
-    choices = JSON.stringify(choices);
 
     // Insert a poll into the collection
     var pollID = Polls.insert({
@@ -58,7 +55,7 @@ Template.createpoll.events({
     // Set timer for finish date of poll on server
     Meteor.call('updateFinishDateTimer', poll, function (error, result) {});
  
-    // Clear form
+    // Clear form fields for next use
     target.title.value = '';
     target.pollType.value = '';
     target.pollType.style.color = "#999";
@@ -68,11 +65,16 @@ Template.createpoll.events({
     target.maxVoters.value = '';
     target.finishDate.value = '';
 
-    // Reset number of choice fields to 2
+    // Get number of choice fields from session variable
+    var numChoiceFields = Session.get("choiceFields");
+
+    // Reset number of choice fields to 2 for next use
     while (numChoiceFields > 2) {
       $('.poll-choices').children()[numChoiceFields-1].remove();
       numChoiceFields -= 1;
     }
+
+    // Update session variable
     Session.set("choiceFields", numChoiceFields);
 
     // Hide UI sections
@@ -81,27 +83,36 @@ Template.createpoll.events({
 
     Notifications.info('Info', 'Your poll is waiting to be mined.');
   },
+  // Called when user attemps to add choice field on create poll form
   'click .add-choice'(event) {
     // Prevent default browser form submit
     event.preventDefault();
+
     // Update number of choice fields in session variable
     var numChoiceFields = Session.get("choiceFields");
     numChoiceFields += 1;
     Session.set("choiceFields", numChoiceFields)
+
+    // Append another choice field to HTML
     $('.poll-choices').append("<input type='text' class='form-control' name='choice" + numChoiceFields + "' placeholder='Poll Choice " + numChoiceFields + "' />");
   },
+  // Called when user attemps to remove choice field on create poll form
   'click .remove-choice'(event) {
     // Prevent default browser form submit
     event.preventDefault();
+
     // Update number of choice fields in session variable
     var numChoiceFields = Session.get("choiceFields");
     if (numChoiceFields > 2) {
+      // Remove choice field from HTML
       $('.poll-choices').children()[numChoiceFields-1].remove()
       numChoiceFields -= 1;
       Session.set("choiceFields", numChoiceFields)
     }
   },
+  // Called when user changes the poll type field
   'change .select-poll-field'(event) {
+    // Change text colour to match other form fields
     event.target.style.color = "#555";
   },
 });

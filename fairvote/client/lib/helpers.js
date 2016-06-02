@@ -27,7 +27,7 @@ countVotes = function(choices, rawBallots) {
   return countedVotes;
 }
 
-getWinnerAV = function () {
+getWinnerALTR = function () {
   // Get current poll from session
   var currentPoll = Session.get("currentPoll");
 
@@ -58,8 +58,7 @@ getWinnerAV = function () {
       }
     });
 
-    var choices = JSON.parse(currentPoll.choices);
-    var countedVotes = countVotes(choices, currentPoll.rawBallots);
+    var countedVotes = countVotes(currentPoll.choices, currentPoll.rawBallots);
 
     // Find choice that has maximum first preference votes
     var maxFirstVotes = 0;
@@ -136,7 +135,7 @@ getWinnerMaxVotes = function() {
   var winningChoice = false;
 
   if (countedVotes){
-    // Get winner with max votes
+    // Get winner with maximum votes
     countedVotes.forEach( function (countedVote) {
       // Check for tie
       if (countedVote.numVotes == maxVotes) {

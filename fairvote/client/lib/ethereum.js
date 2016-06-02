@@ -1,17 +1,26 @@
 import { Polls } from '../../imports/api/polls.js';
 
 observePolls = function(){
-  // Observe polls
+  // Observe polls collection
   Polls.find({}).observe({
+    // Called when new polls are created in collection
     added: function(newDocument) {
-      // Check if contract already exists for poll
+      // Check if contract already exists for poll and owner matches current ethereum account
       if (!newDocument.contract && newDocument.owner.address == Session.get("currentEthAccount").address) {
+        
         console.log("Initialising contract...");
+
+        // Get poll contract
         var pollContract = web3.eth.contract([{ constant: true, inputs: [{ name: "", type: "address" }], name: "hasVoted", outputs: [{ name: "", type: "bool" }], type: "function" }, { constant: false, inputs: [], name: "kill", outputs: [], type: "function" }, { constant: true, inputs: [], name: "p", outputs: [{ name: "owner", type: "address" }, { name: "title", type: "string" }, { name: "pollType", type: "string" }, { name: "choices", type: "string" }, { name: "maxBallots", type: "uint256" }, { name: "numBallots", type: "uint256" }, { name: "finishDate", type: "uint256" }, { name: "active", type: "bool" }], type: "function" }, { constant: false, inputs: [{ name: "votes", type: "string" }], name: "vote", outputs: [{ name: "", type: "bool" }], type: "function" }, { inputs: [{ name: "_title", type: "string" }, { name: "_pollType", type: "string" }, { name: "_choices", type: "string" }, { name: "_maxBallots", type: "uint256" }, { name: "_finishDate", type: "uint256" }], type: "constructor" }, { anonymous: false, inputs: [{ indexed: false, name: "votes", type: "string" }, { indexed: false, name: "sender", type: "address" }], name: "Ballot", type: "event" }]);
+        
+        // Convert choices array to string for storage in contract
+        var choices = JSON.stringify(newDocument.choices);
+
+        // Create new poll on block chain
         var poll = pollContract.new(
           newDocument.title,
           newDocument.pollType,
-          newDocument.choices, 
+          choices, 
           newDocument.maxVoters, 
           newDocument.finishDate, 
           {
@@ -29,27 +38,28 @@ observePolls = function(){
                 // Get current block and store in poll collection
                 currentBlock = web3.eth.getTransaction(contract.transactionHash).blockNumber;
 
-                // Contract now exists on the block chain, update collection
+                // Contract now exists on the block chain, update collection with contract and current block
                 Polls.update(newDocument._id, {
                     $set: { 
                       contract: contract,
-                      account: Session.get("currentEthAccount"),
                       block: currentBlock,
                     },
                   });
+
+                // Inform user their poll is now live
                 Notifications.success('Success', 'Your poll is now live on the blockchain.');
               } 
             } 
           });
       }
     },
+    // Called when a poll is changed in collection
     changed: function(newDocument, oldDocument){
       // Check that a ballot has been received
       if (newDocument.rawBallots.length > oldDocument.rawBallots.length) {
 
         // Recount votes for poll
-        var choices = JSON.parse(newDocument.choices);
-        var countedVotes = countVotes(choices, newDocument.rawBallots);
+        var countedVotes = countVotes(newDocument.choices, newDocument.rawBallots);
         
         // Update the counted votes session variable
         Session.set("countedVotes", countedVotes);
@@ -57,8 +67,6 @@ observePolls = function(){
         // Update current poll session variable
         Session.set("currentPoll", newDocument);
       }
-    },
-    removed: function(newDocument){
     },
 
   });
@@ -68,7 +76,7 @@ submitVotes = function(poll, votes){
   // Convert votes to string to store on blockchain
   var votesString = JSON.stringify(votes);
 
-  // Submit vote to poll in block chain
+  // Submit vote to poll on block chain
   poll.vote(
     votesString, 
     {
@@ -96,6 +104,7 @@ getVoteEvents = function(){
 	// Count votes for the poll now
  	var startBlock = currentPoll.block;
 
+  // Get all ballot events from block chain
   var filter = poll.Ballot(
 		{}, 
 		{
@@ -104,11 +113,33 @@ getVoteEvents = function(){
 		},
 		function(err, result) {
 			if (!err) {
-        // Vote event found, get the current poll
+        // Ballot event found, get the current poll
         var currentPoll = Session.get("currentPoll");
 
-        // Ensure senders address does not exist inside list of voters for current poll
+        // Ensure senders address does not exist inside list of current voters for current poll
         if ($.inArray(result.args.sender, currentPoll.voters) < 0) {
+
+          // Check for duplicate choices & preferences to protect against manually entered ballots from attackers
+          var ballot = JSON.parse(result.args.votes);
+
+          // Create arrays of all choices and preferences on ballot
+          var choices = [];
+          var preferences = [];
+          ballot.forEach( function (vote) {
+            if (vote.preference !== "") {
+              choices.push(vote.choice);
+            }
+            if (vote.preference !== "") {
+              choices.push(vote.preference);
+            }
+          });
+
+          // If either array contains duplicates, we will not count this ballot (spoiled ballot)
+          if (((new Set(choices)).size !== choices.length) || 
+              ((new Set(preferences)).size !== preferences.length)) {
+            return;
+          }
+
           // Push ballot to list of ballots and add senders address to list of voters
           Polls.update(currentPoll._id, {
             $push: {
@@ -116,6 +147,7 @@ getVoteEvents = function(){
               voters: result.args.sender,
             },
           });
+
           // Notify user their vote is now live on the blockchain
           Notifications.success('Success', 'Your vote is now live on the blockchain.');
         }
