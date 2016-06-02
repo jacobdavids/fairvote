@@ -25,21 +25,21 @@ meteor
 
 Meteor server will start running on: [http://localhost:3000](http://localhost:3000)
 
-Read http://guide.meteor.com/ for more information
+Read [http://guide.meteor.com/](http://guide.meteor.com/) for more information
 
 ### Create Ethereum account
 
-TODO
+Create an Ethereum account:
+
+```
+geth --identity "PrivateNode4507" --genesis ~/eth/CustomGenesis.json --rpc --rpcport "8080" --rpccorsdomain "*" --datadir "~/eth/chain" --port "30303" --nodiscover --ipcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" --rpcapi "db,eth,net,web3" --autodag --networkid 1900 --nat "any" --verbosity 6 account new
+```
 
 ## You will also need to run your Ethereum private node locally!
 
 Create the following directories to store your custom genesis block and chain data:
 
-```
-mkdir -p ~/eth/chains
-```
-
-Go to created eth directory and create CustomGenesis.json file with the following content (add in your Ethereum account address where specified):
+`cd` into specified datadir in the previous command `~/eth/chain` and create CustomGenesis.json file with the following content (add in your Ethereum account address where specified):
 
 ```
 {
@@ -62,13 +62,13 @@ Go to created eth directory and create CustomGenesis.json file with the followin
 Start geth console by running this in a terminal:
 
 ```
-geth --identity "PrivateNode4507" --genesis ~/eth/CustomGenesis.json --rpc --rpcport "8080" --rpccorsdomain "*" --datadir "~/eth/chains" --port "30303" --nodiscover --ipcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" --rpcapi "db,eth,net,web3" --autodag --networkid 1900 --nat "any" --verbosity 6  console
+geth --identity "PrivateNode4507" --genesis ~/eth/CustomGenesis.json --rpc --rpcport "8080" --rpccorsdomain "*" --datadir "~/eth/chain"--port "30303" --nodiscover --ipcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" --rpcapi "db,eth,net,web3" --autodag --networkid 1900 --nat "any" --verbosity 6 console
 ```
 
 In a new tab/window attach to the existing geth console by running:
 
 ```
-geth --identity "PrivateNode4507" --genesis ~/eth/CustomGenesis.json --rpc --rpcport "8080" --rpccorsdomain "*" --datadir "~/eth/chains" --port "30303" --nodiscover --ipcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" --rpcapi "db,eth,net,web3" --autodag --networkid 1900 --nat "any" --verbosity 0 attach
+geth --identity "PrivateNode4507" --genesis ~/eth/CustomGenesis.json --rpc --rpcport "8080" --rpccorsdomain "*" --datadir "~/eth/chain" --port "30303" --nodiscover --ipcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" --rpcapi "db,eth,net,web3" --autodag --networkid 1900 --nat "any" --verbosity 0 attach
 ```
 
 In the attached console, start miner by running:
@@ -77,8 +77,8 @@ In the attached console, start miner by running:
 miner.start()
 ```
 
-Unlock your account/s by running:
+Unlock your account/s by running the following (add in your Ethereum account password where specified):
 
 ```
-personal.unlockAccount(eth.accounts[0], "password")
+personal.unlockAccount(eth.accounts[0], "insert ethereum account password here")
 ```
