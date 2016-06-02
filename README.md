@@ -20,6 +20,7 @@ curl https://install.meteor.com/ | sh
 `cd` into project directory and then run:
 
 ```
+meteor npm install
 meteor
 ```
 
