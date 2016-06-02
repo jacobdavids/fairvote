@@ -38,7 +38,7 @@ Create the following directory to store your custom genesis block and chain data
 mkdir ~/eth
 ```
 
-`cd` into the created directory `~/eth` and create CustomGenesis.json file with the following content (add in your Ethereum account address where specified):
+`cd` into the created directory `~/eth` and create CustomGenesis.json file with the following content (add in your Ethereum account address where specified - account created in next step):
 
 ```
 {
@@ -65,6 +65,7 @@ Create an Ethereum account:
 ```
 geth --identity "PrivateNode4507" --genesis ~/eth/CustomGenesis.json --rpc --rpcport "8080" --rpccorsdomain "*" --datadir "~/eth/chain" --port "30303" --nodiscover --ipcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" --rpcapi "db,eth,net,web3" --autodag --networkid 1900 --nat "any" --verbosity 6 account new
 ```
+Add account address to line specified in CustomGenesis.json file.
 
 Start geth console by running this in a terminal:
 
